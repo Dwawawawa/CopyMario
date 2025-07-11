@@ -75,13 +75,10 @@ git checkout -b [브랜치명]
 │   │   ├── 📄 IntroScene.h/cpp
 │   │   ├── 📄 Stage1_1Scene.h/cpp
 │   │   └── 📄 OutroScene.h/cpp
-│   ├── 📂 GameObjects
-│   │   ├── 📄 Player.h/cpp
-│   │   ├── 📄 Enemy.h/cpp
-│   │   └── 📄 Item.h/cpp
-│   └── 📂 Resources
-│       ├── 📂 Images
-│       └── 📂 Maps
+│   └── 📂 GameObjects
+│       ├── 📄 Player.h/cpp
+│       ├── 📄 Enemy.h/cpp
+│       └── 📄 Item.h/cpp
 ├── 📂 SSEngine (엔진 프로젝트)
 │   ├── 📄 10EngineD2D.h/cpp
 │   ├── 📂 Core
@@ -89,6 +86,9 @@ git checkout -b [브랜치명]
 │   ├── 📂 Input
 │   ├── 📂 Physics
 │   └── 📂 Utils
+├──📂 Resources
+│   ├── 📂 Images
+│   └── 📂 Maps
 └── 📄 README.md
 ```
 
