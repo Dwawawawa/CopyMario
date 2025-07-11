@@ -79,11 +79,19 @@ public:
 	void EndRender();
 
 
+	
+
+	void ResizeInEngine(UINT width, UINT height)
+	{
+		m_pRenderTarget->Resize(D2D1::SizeU(width, height));
+	}
+
 public:
 	void DrawSomething();
+	/// 문자 출력
+	void DrawText(float x, float y, const WCHAR* pch, ...);
 
-
-public:
+private:
 
 	template<class Interface>
 	inline void

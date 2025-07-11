@@ -21,12 +21,18 @@
     <ClInclude Include="10EngineD2D.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="20GameTimer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="10EngineD2D.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="20GameTimer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

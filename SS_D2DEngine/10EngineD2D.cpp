@@ -24,6 +24,11 @@ SSEngine* SSEngine::GetInstance()
 	return m_pInstance;
 }
 
+//ID2D1HwndRenderTarget* SSEngine::GetRenderTarget()
+//{
+//	return m_pRenderTarget;
+//}
+
 HRESULT SSEngine::Initialize(HWND hwnd)
 {
 	HRESULT hr = S_OK;
@@ -180,4 +185,27 @@ void SSEngine::DrawSomething()
 
 }
 
+
+void SSEngine::DrawText(float x, float y, const WCHAR* pch, ...)
+{
+	// 포맷 스트링 관련 버퍼, 가변인자 처리
+	va_list ap;			// 현재 읽고 있는 번지를 기억
+	va_start(ap, pch);	// ap 포인터 변수가 첫번째 가변인수를 가리키도록 초기화
+
+	int len = _vscwprintf(pch, ap) + 1;
+	WCHAR* buffer = new WCHAR[len];
+
+	vswprintf_s(buffer, len, pch, ap);
+	va_end(ap);
+
+	int nLen = lstrlen(buffer);
+
+	// 폰트별 차지하는 영역 계산 필요
+	m_pRenderTarget->DrawText(buffer, wcslen(buffer), m_pTextFormat,
+		D2D1::RectF((float)x, (float)y, (float)(x + 500), (float)(y + 40)),
+		m_pNowBrush);
+
+	// 포맷관련 버퍼 삭제
+	delete[] buffer;
+}
 

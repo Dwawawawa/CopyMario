@@ -12,9 +12,9 @@
 ### 주요 브랜치 구조
 | 브랜치명 | 설명 | 상태 |
 |---------|------|------|
-| `main` | 최종 완성 버전 | 🎯 목표 |
-| `OnlySeongu` | 엔진 분리 없이 게임로직만 구현 | 🔄 진행중 |
-| `BasicEngine` | SSEngine 기본 구조 분리 | 📋 예정 |
+| `main` | 최종 완성 버전 | 🎯 완료 |
+| `OnlySeongu` | 엔진 분리 없이 게임로직만 구현 | 🎯 완료  |
+| `BasicEngine` | SSEngine 기본 구조 분리 | 🔄 진행중 |
 | `RenderFocus` | 렌더링 시스템 집중 개발 | 📋 예정 |
 | `AnimationMaster` | 애니메이션 시스템 완성 | 📋 예정 |
 | `ShaderMario` | 쉐이더 적용된 마리오 구현 | 📋 예정 |
@@ -155,6 +155,8 @@ git checkout -b [브랜치명]
 - [Direct2D 공식 문서](https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-portal)
 - [슈퍼마리오 브라더스 게임 분석](https://www.youtube.com/watch?v=zRGRJRUWafY)
 - [2D 게임 물리 엔진 이론](https://www.toptal.com/game/video-game-physics-part-i-an-introduction-to-rigid-body-dynamics)
+
+- [당신의 안녕을 위하여](https://github.com/hajineys/For-Your-Tranquility)
 
 ---
 **⭐ 이 프로젝트가 도움이 되었다면 스타를 눌러주세요!**

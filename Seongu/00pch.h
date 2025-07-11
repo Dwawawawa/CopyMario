@@ -25,19 +25,42 @@
 #include <memory>						//유니크포인터
 
 
-//#define CW_XSIZE 1920
-//#define CW_YSIZE 1080
+#define SS_XSIZE 1280
+#define SS_YSIZE 720
 
 ///////////////////////////////////////////////
+//! 
+//! 공부 기록 : 추가 포함 디렉터리 이용하기
+//! 
 //! 아니 이건 아닌데 lib로 만들었잖아. 정적인거 종속성으로 쓰는데 굳이?
 //! #include "10EngineD2D.h"
-//! 1. 이렇게 하는 방법이 있어. 
+//! 1. 이렇게 하는 방법이 있어. -> 짜침
 //! #include "../SS_D2DEngine/10EngineD2D.h"
-//! 그럴려면 
-//! Project Properties → C/C++ → General → Additional Include Directories
+//! 
 //! 2. 아래 처럼? : 추가 포함 디렉터리 (Include Directories)
+//! Project Properties → C/C++ → General → Additional Include Directories
+//! 
+//! --------------------------
+//! 1. #pragma comment(lib, "SS_D2DEngine.lib") 
+//! 정확한 위치에다가 만들어야 함
+//! #pragma comment(lib, "x64/Debug/SS_D2DEngine.lib") 
+//! 
+//! 2. 그렇다면 릴리즈는 어떻게 해야 할까?
+//! 내가 문제였네. pch.h를 잘 못 사용했었어. 
+//! 
+//! 3. 파일별 PCH 설정:
+//! 00pch.cpp: 우클릭 → 속성 → C / C++ → 미리 컴파일된 헤더 → "만들기(/Yc)"
+//! 10winmain.cpp : 우클릭 → 속성 → C / C++ → 미리 컴파일된 헤더 → "사용(/Yu)"
+//! 다른 모든.cpp 파일 : "사용(/Yu)"
+//! 
 #include "10EngineD2D.h"
+#include "20GameTimer.h"
 
+#ifdef _DEBUG
+#pragma comment(lib, "x64/Debug/SS_D2DEngine.lib") 
+#else
+#pragma comment(lib, "x64/Release/SS_D2DEngine.lib") 
+#endif
 
 #endif //PCH_H
 

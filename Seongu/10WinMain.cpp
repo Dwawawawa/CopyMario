@@ -12,7 +12,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     gp->MessageLoop();
 
-    gp->CleanupD2D();
+    gp->Release();
 
     return 0;
 }

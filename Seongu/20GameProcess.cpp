@@ -1,23 +1,8 @@
 #include "00pch.h"
 #include "20GameProcess.h"
 
-
-//////////////////////
-//! 이제 다음에 해야 할껀
-//! 엔진을 빼는 거임
-//! 전역으로 박혀 있는 게 말이 안돼
-
-
-//// static 멤버 변수 정의 (메모리 할당)
-ID2D1Factory* GameProcess::g_pD2DFactory = nullptr;
-ID2D1HwndRenderTarget* GameProcess::g_pRenderTarget = nullptr;
-ID2D1SolidColorBrush* GameProcess::g_pBrush = nullptr;
-IDWriteFactory* GameProcess::g_pDWriteFactory = nullptr;
-IDWriteTextFormat* GameProcess::g_pTextFormat = nullptr;
-
-
 GameProcess::GameProcess()
-    :m_hwnd(nullptr)
+    :m_pTimer(nullptr), m_hwnd(nullptr)
 {
 }
 
@@ -45,16 +30,19 @@ bool GameProcess::Initialize(HINSTANCE hInstance)
         L"다이렉트",
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT,
-        800, 600,
+        SS_XSIZE, SS_YSIZE,
         NULL, NULL, hInstance, NULL
     );
 
     if (m_hwnd == NULL) return FALSE;
 
+
+    ///////////////////////////////////////////////////
+    // D2D엔진으로 옮기는 중 
     // Direct2D 초기화
-    if (FAILED(InitializeD2D(m_hwnd))) return FALSE;
+    //if (FAILED(InitializeD2D(m_hwnd))) return FALSE;
     // 1. 매니저 만들기 전에 엔진직접 접근
-    //SSEngine::GetInstance()->Initialize(m_hwnd);
+    SSEngine::GetInstance()->Initialize(m_hwnd);
     // 2. 내일안에 이걸로 바꾸리라
     // CreateManager();
 
@@ -91,178 +79,70 @@ void GameProcess::MessageLoop()
 
 void GameProcess::GameLoop()
 {
-    OnRender();
+    //float FPS = m_pTimer->GetFPS();
+    float _dTime = m_pTimer->DeltaTime();
+
+    SSEngine::GetInstance()->BeginRender();
+    SSEngine::GetInstance()->DrawSomething();
+
+    
+    // 드로우 텍스트로 테스트
+    //SSEngine::GetInstance()->DrawText(0, 0, L"FPS : %.0f", FPS);
+ 	SSEngine::GetInstance()->DrawText(0, 20, L"DeltaTime : %f", _dTime);
+ 	//SSEngine::GetInstance()->DrawText(300, 0, L"MousePosX : %d", InputManager::GetInstance()->GetMousePos().x);
+ 	//SSEngine::GetInstance()->DrawText(300, 20, L"MousePosY  : %d", InputManager::GetInstance()->GetMousePos().y);
+    
+
+
+    SSEngine::GetInstance()->EndRender();
+}
+
+void GameProcess::Release()
+{
+    ///////////////////////
+    // 릴리즈를 안해도 누수가 안 생길까?
+    // 왤까?
+    //
+    if (m_pTimer != nullptr)
+    {
+        delete m_pTimer;
+        m_pTimer = nullptr;
+    }
+
+    SSEngine::GetInstance()->Release();
 }
 
 LRESULT CALLBACK GameProcess::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
-    case WM_PAINT:
-        GameProcess::OnRender();
-        ValidateRect(hwnd, NULL);
-        return 0;
-
     case WM_SIZE:
     {
         UINT width = LOWORD(lParam);
         UINT height = HIWORD(lParam);
         GameProcess::OnResize(width, height);
+        break;
     }
-    return 0;
 
     case WM_DESTROY:
         PostQuitMessage(0);
-        return 0;
+        break;
+
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 
-    return TRUE;
+    return 0;
 }
 
-// 이제 이 함수 안씀 
-// 곧 삭제 예정
-HRESULT GameProcess::InitializeD2D(HWND hwnd)
-{
-    HRESULT hr = S_OK;
-
-    // 1. D2D1Factory 생성
-    hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &g_pD2DFactory);
-    if (FAILED(hr)) return hr;
-
-    // 2. 윈도우 크기 얻기
-    RECT rc;
-    GetClientRect(hwnd, &rc);
-    D2D1_SIZE_U size = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
-
-    // 3. HwndRenderTarget 생성
-    hr = g_pD2DFactory->CreateHwndRenderTarget(
-        D2D1::RenderTargetProperties(),
-        D2D1::HwndRenderTargetProperties(hwnd, size),
-        &g_pRenderTarget
-    );
-    if (FAILED(hr)) return hr;
-
-    // 4. 브러시 생성 (그리기에 사용할 색상)
-    hr = g_pRenderTarget->CreateSolidColorBrush(
-        D2D1::ColorF(D2D1::ColorF::Black),
-        &g_pBrush
-    );
-    if (FAILED(hr)) return hr;
-
-    // 5. DirectWrite 초기화 (텍스트 렌더링용)
-    hr = DWriteCreateFactory(
-        DWRITE_FACTORY_TYPE_SHARED,
-        __uuidof(IDWriteFactory),
-        reinterpret_cast<IUnknown**>(&g_pDWriteFactory)
-    );
-    if (FAILED(hr)) return hr;
-
-    // 6. 텍스트 포맷 생성
-    hr = g_pDWriteFactory->CreateTextFormat(
-        L"굴림",
-        NULL,
-        DWRITE_FONT_WEIGHT_NORMAL,
-        DWRITE_FONT_STYLE_NORMAL,
-        DWRITE_FONT_STRETCH_NORMAL,
-        16.0f,
-        L"ko-kr",
-        &g_pTextFormat
-    );
-
-    return hr;
-}
-
-void GameProcess::OnRender()
-{
-    if (!g_pRenderTarget) return;
-
-    // 렌더링 시작
-    g_pRenderTarget->BeginDraw();
-
-    // 배경 지우기
-    g_pRenderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
-
-    // 1. 사각형 그리기
-    D2D1_RECT_F rectangle = D2D1::RectF(50, 50, 150, 100);
-
-    // 채워진 사각형
-    g_pBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Red));
-    g_pRenderTarget->FillRectangle(rectangle, g_pBrush);
-
-    // 사각형 테두리
-    g_pBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Black));
-    g_pRenderTarget->DrawRectangle(rectangle, g_pBrush, 2.0f);
-
-    // 2. 원 그리기
-    D2D1_ELLIPSE ellipse = D2D1::Ellipse(D2D1::Point2F(300, 100), 50, 50);
-
-    // 채워진 원
-    g_pBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Blue));
-    g_pRenderTarget->FillEllipse(ellipse, g_pBrush);
-
-    // 원 테두리
-    g_pBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Black));
-    g_pRenderTarget->DrawEllipse(ellipse, g_pBrush, 2.0f);
-
-    // 3. 타원 그리기
-    D2D1_ELLIPSE oval = D2D1::Ellipse(D2D1::Point2F(500, 100), 80, 40);
-    g_pBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Green));
-    g_pRenderTarget->FillEllipse(oval, g_pBrush);
-
-    // 4. 선 그리기
-    g_pBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Purple));
-    g_pRenderTarget->DrawLine(
-        D2D1::Point2F(50, 200),
-        D2D1::Point2F(550, 250),
-        g_pBrush,
-        3.0f
-    );
-
-    // 5. 둥근 모서리 사각형 그리기
-    D2D1_ROUNDED_RECT roundedRect = D2D1::RoundedRect(
-        D2D1::RectF(50, 300, 200, 400),
-        20, 20  // 둥근 모서리 반지름
-    );
-    g_pBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Orange));
-    g_pRenderTarget->FillRoundedRectangle(roundedRect, g_pBrush);
-
-    // 6. 텍스트 그리기
-    g_pBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Black));
-    D2D1_RECT_F textRect = D2D1::RectF(300, 300, 600, 400);
-    g_pRenderTarget->DrawText(
-        L"Direct2D로 그린 기본 도형들",
-        wcslen(L"Direct2D로 그린 기본 도형들"),
-        g_pTextFormat,
-        textRect,
-        g_pBrush
-    );
-
-    // 렌더링 종료
-    HRESULT hr = g_pRenderTarget->EndDraw();
-
-    // 디바이스 손실 등의 오류 처리
-    if (hr == D2DERR_RECREATE_TARGET)
-    {
-        // RenderTarget을 재생성해야 함
-        // 실제 게임에서는 이 부분을 처리해야 함
-    }
-}
-
+////////////////////////////////
+//! 얜 살릴 필요가 있는데, JJ엔진에는 어디에 있을까?
+//! 이겜은 리사이즈가 없음!
+//! 그럼 이건 내 창작이겠네?
+//! 가보자구
+//! 
 void GameProcess::OnResize(UINT width, UINT height)
 {
-    if (g_pRenderTarget)
-    {
-        // 윈도우 크기 변경 시 RenderTarget 크기 조정
-        g_pRenderTarget->Resize(D2D1::SizeU(width, height));
-    }
-}
+    SSEngine::GetInstance()->ResizeInEngine(width, height);
 
-void GameProcess::CleanupD2D()
-{
-    // 리소스 정리 (역순으로)
-    if (g_pTextFormat)      g_pTextFormat->Release();
-    if (g_pDWriteFactory)   g_pDWriteFactory->Release();
-    if (g_pBrush)           g_pBrush->Release();
-    if (g_pRenderTarget)    g_pRenderTarget->Release();
-    if (g_pD2DFactory)      g_pD2DFactory->Release();
 }
