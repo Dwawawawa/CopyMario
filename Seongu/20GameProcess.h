@@ -1,6 +1,7 @@
 #pragma once
 
 class GameTimer;
+class SceneManager;
 
 class GameProcess
 {
@@ -8,18 +9,27 @@ private:
 	HWND m_hwnd;
 	
 	GameTimer* m_pTimer;
+	
 
 public:
 	GameProcess();
 	~GameProcess();
 
 	bool Initialize(HINSTANCE hInstance);
-	
+	void Release();
+
 	void MessageLoop();
 	void GameLoop();
 
-	void Release();
+	void CreateManager();
+	//void LoadResources();
+	//void CreateFileFolder();
+	//void CreateScene();
 
+
+
+	////////////////
+	// ÇïÇÁ ÇÔ¼ö
 	static void OnResize(UINT width, UINT height);
 
 public:

@@ -13,6 +13,7 @@ GameProcess::~GameProcess()
 bool GameProcess::Initialize(HINSTANCE hInstance)
 {
 
+
     // 윈도우 클래스 등록
     WNDCLASS wc = {};
     wc.lpfnWndProc = WndProc;
@@ -37,14 +38,8 @@ bool GameProcess::Initialize(HINSTANCE hInstance)
     if (m_hwnd == NULL) return FALSE;
 
 
-    ///////////////////////////////////////////////////
-    // D2D엔진으로 옮기는 중 
-    // Direct2D 초기화
-    //if (FAILED(InitializeD2D(m_hwnd))) return FALSE;
-    // 1. 매니저 만들기 전에 엔진직접 접근
-    SSEngine::GetInstance()->Initialize(m_hwnd);
-    // 2. 내일안에 이걸로 바꾸리라
-    // CreateManager();
+
+    CreateManager();
 
 
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
@@ -79,22 +74,41 @@ void GameProcess::MessageLoop()
 
 void GameProcess::GameLoop()
 {
-    //float FPS = m_pTimer->GetFPS();
-    float _dTime = m_pTimer->DeltaTime();
+    // 타이머 틱 (매 프레임마다 가장 먼저!)
+    m_pTimer->Tick();
+
+    // 델타 타임 얻기
+    float deltaTime = m_pTimer->DeltaTime();
+    float deltaTimeMS = m_pTimer->DeltaTimeMS();
+    float totalTime = m_pTimer->TotalTime();
 
     SSEngine::GetInstance()->BeginRender();
     SSEngine::GetInstance()->DrawSomething();
 
     
-    // 드로우 텍스트로 테스트
-    //SSEngine::GetInstance()->DrawText(0, 0, L"FPS : %.0f", FPS);
- 	SSEngine::GetInstance()->DrawText(0, 20, L"DeltaTime : %f", _dTime);
- 	//SSEngine::GetInstance()->DrawText(300, 0, L"MousePosX : %d", InputManager::GetInstance()->GetMousePos().x);
- 	//SSEngine::GetInstance()->DrawText(300, 20, L"MousePosY  : %d", InputManager::GetInstance()->GetMousePos().y);
+    // 디버그 정보 출력
+ 	SSEngine::GetInstance()->DrawText(0, 0, L"TotalTime : %.2f sec", totalTime);
+ 	SSEngine::GetInstance()->DrawText(0, 20, L"DeltaTime : %4f sec", deltaTime);
+ 	SSEngine::GetInstance()->DrawText(0, 40, L"DeltaTimeMS : %.2f ms", deltaTimeMS);
+ 	SSEngine::GetInstance()->DrawText(0, 60, L"FPS : %.0f", 1.0f/ deltaTime);
+ 	
     
 
 
     SSEngine::GetInstance()->EndRender();
+}
+
+void GameProcess::CreateManager()
+{
+    // 엔진 생성
+    SSEngine::GetInstance()->Initialize(m_hwnd);
+
+    // 타이머 생성
+    m_pTimer = new GameTimer();
+    m_pTimer->Reset();
+
+
+    // 인풋, 사운드 여기서 만들면 됨
 }
 
 void GameProcess::Release()

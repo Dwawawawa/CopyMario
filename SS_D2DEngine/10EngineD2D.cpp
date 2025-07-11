@@ -66,7 +66,8 @@ HRESULT SSEngine::Initialize(HWND hwnd)
 
 	// 6. ÅØ½ºÆ® Æ÷¸Ë »ý¼º
 	hr = m_pDWriteFactory->CreateTextFormat(
-		L"±¼¸²",
+		//L"±¼¸²",
+		L"¸¼Àº °íµñ",
 		NULL,
 		DWRITE_FONT_WEIGHT_NORMAL,
 		DWRITE_FONT_STYLE_NORMAL,
