@@ -1,0 +1,44 @@
+// 00pch.h: 미리 컴파일된 헤더 파일입니다.
+// 아래 나열된 파일은 한 번만 컴파일되었으며, 향후 빌드에 대한 빌드 성능을 향상합니다.
+// 코드 컴파일 및 여러 코드 검색 기능을 포함하여 IntelliSense 성능에도 영향을 미칩니다.
+// 그러나 여기에 나열된 파일은 빌드 간 업데이트되는 경우 모두 다시 컴파일됩니다.
+// 여기에 자주 업데이트할 파일을 추가하지 마세요. 그러면 성능이 저하됩니다.
+
+
+///////////////////////
+//! 성우
+//! 대성우
+//! 빅 보이스 액터
+
+
+#ifndef PCH_H
+#define PCH_H
+
+#define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
+#include <windows.h>
+#include <d2d1.h>
+#include <dwrite.h>
+
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
+
+#include <memory>						//유니크포인터
+
+
+//#define CW_XSIZE 1920
+//#define CW_YSIZE 1080
+
+///////////////////////////////////////////////
+//! 아니 이건 아닌데 lib로 만들었잖아. 정적인거 종속성으로 쓰는데 굳이?
+//! #include "10EngineD2D.h"
+//! 1. 이렇게 하는 방법이 있어. 
+//! #include "../SS_D2DEngine/10EngineD2D.h"
+//! 그럴려면 
+//! Project Properties → C/C++ → General → Additional Include Directories
+//! 2. 아래 처럼? : 추가 포함 디렉터리 (Include Directories)
+#include "10EngineD2D.h"
+
+
+#endif //PCH_H
+
+

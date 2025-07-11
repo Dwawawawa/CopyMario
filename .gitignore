@@ -1,0 +1,52 @@
+# 빌드 결과물
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.lib
+*.dll
+*.exp
+*.log
+*.pch
+
+# 중간 파일
+*.idb
+*.ipch
+*.tlog
+*.lastbuildstate
+
+# Visual Studio 관련
+.vscode/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# 빌드 폴더
+Debug/
+Release/
+x64/
+x86/
+bin/
+build/
+out/
+
+# cmake 관련
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# 기타
+*.tmp
+*.bak
+*.cache
+*.db
+*.sdf
+*.opensdf
+
+# OS 별
+.DS_Store
+Thumbs.db
+desktop.ini
