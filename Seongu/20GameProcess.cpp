@@ -3,6 +3,7 @@
 
 GameProcess::GameProcess()
     :m_pTimer(nullptr), m_hwnd(nullptr)
+    ,m_deltaTime(0),m_deltaTimeMS(0),m_totalTime(0)
 {
 }
 
@@ -48,7 +49,7 @@ bool GameProcess::Initialize(HINSTANCE hInstance)
     return TRUE;
 }
 
-void GameProcess::MessageLoop()
+void GameProcess::Run()
 {
     // 메시지 루프
     MSG msg = {};
@@ -67,33 +68,48 @@ void GameProcess::MessageLoop()
         }
         else
         {
-            GameLoop();
+            UpdateTime();
+            UpdateInput();
+            UpdateLogic();
+            Render();
         }
     }
 }
 
-void GameProcess::GameLoop()
+
+void GameProcess::UpdateTime()
 {
     // 타이머 틱 (매 프레임마다 가장 먼저!)
     m_pTimer->Tick();
 
     // 델타 타임 얻기
-    float deltaTime = m_pTimer->DeltaTime();
-    float deltaTimeMS = m_pTimer->DeltaTimeMS();
-    float totalTime = m_pTimer->TotalTime();
+    m_deltaTime = m_pTimer->DeltaTime();
+    m_deltaTimeMS = m_pTimer->DeltaTimeMS();
+    m_totalTime = m_pTimer->TotalTime();
+}
+
+void GameProcess::UpdateInput()
+{
+}
+
+void GameProcess::UpdateLogic()
+{
+}
+
+void GameProcess::Render()
+{
 
     SSEngine::GetInstance()->BeginRender();
     SSEngine::GetInstance()->DrawSomething();
 
-    
-    // 디버그 정보 출력
- 	SSEngine::GetInstance()->DrawText(0, 0, L"TotalTime : %.2f sec", totalTime);
- 	SSEngine::GetInstance()->DrawText(0, 20, L"DeltaTime : %4f sec", deltaTime);
- 	SSEngine::GetInstance()->DrawText(0, 40, L"DeltaTimeMS : %.2f ms", deltaTimeMS);
- 	SSEngine::GetInstance()->DrawText(0, 60, L"FPS : %.0f", 1.0f/ deltaTime);
- 	
-    
 
+    if(1)
+    {
+        SSEngine::GetInstance()->DrawText(0, 0, L"TotalTime : %.2f sec", m_totalTime);
+        SSEngine::GetInstance()->DrawText(0, 20, L"DeltaTime : %4f sec", m_deltaTime);
+        SSEngine::GetInstance()->DrawText(0, 40, L"DeltaTimeMS : %.2f ms", m_deltaTimeMS);
+        SSEngine::GetInstance()->DrawText(0, 60, L"FPS : %.0f", 1.0f / m_deltaTime);
+    }
 
     SSEngine::GetInstance()->EndRender();
 }
@@ -113,10 +129,7 @@ void GameProcess::CreateManager()
 
 void GameProcess::Release()
 {
-    ///////////////////////
-    // 릴리즈를 안해도 누수가 안 생길까?
-    // 왤까?
-    //
+
     if (m_pTimer != nullptr)
     {
         delete m_pTimer;

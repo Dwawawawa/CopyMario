@@ -1,109 +1,91 @@
 #pragma once
-
-///////////////
-// 이게 무슨 의미가 있는거지?
-// 이것 땜에 죽는데...
-//#ifdef _WIN64
-//#ifdef _DEBUG
-//#pragma comment(lib, "SSEngine_D2D64d")
-//#else
-//#pragma comment(lib, "SSEngine_D2D64")	
-//#endif
-//#else
-//#ifdef _DEBUG
-//#pragma comment(lib, "SSEngine_D2Dd")
-//#else
-//#pragma comment(lib, "SSEngine_D2D")	
-//#endif
-//#endif
-
-#include <d2d1.h>
+#include <wrl/client.h>
+#include <d2d1_3.h>
 #include <d2d1helper.h>
-
-// 2차원 벡터사용
-#include <dcommon.h>						// IWICImagingFactory
-#include <dwrite.h>							// writefactory
-#include <stdio.h>							// IWICImagingFactory
-
-#include <wincodec.h>						// IWICImagingFactory
-//#include <xstring>
+#include <d3d11_1.h>
+#include <dxgi1_2.h>
+#include <dwrite.h>
+#include <wincodec.h>
+#include <string>
 
 #pragma comment(lib, "D2D1.lib")
+#pragma comment(lib, "D3D11.lib")
+#pragma comment(lib, "DXGI.lib")
 #pragma comment(lib, "dwrite.lib")
-#pragma comment(lib, "windowscodecs.lib")	// WIC
+#pragma comment(lib, "windowscodecs.lib")
 
-using namespace D2D1;
-using namespace std;
-
-#include <string>
+using namespace Microsoft::WRL;
 
 class SSEngine
 {
-private:
-	SSEngine();
-	~SSEngine();
-
-	static SSEngine* m_pInstance;
-
 public:
-	static SSEngine* GetInstance();
+	SSEngine() = default;
+	~SSEngine() { Uninitialize(); }
 
-private:
-	ID2D1Factory* m_pFactory;
-	ID2D1HwndRenderTarget* m_pRenderTarget;
+    // 기존 SSEngine 메서드를 새로운 이름으로 매핑
+    void Initialize(HWND hwnd);
+    void Uninitialize();
+    void Resize(UINT width, UINT height);
 
+    // 기존 그리기 메서드들
+    void DrawLine(float x1, float y1, float x2, float y2, const D2D1::ColorF& color);
+    void DrawCircle(float x, float y, float radius, const D2D1::ColorF& color);
+    void DrawRectangle(float left, float top, float right, float bottom, const D2D1::ColorF& color);
 
-	///////////////////////////////////////////////////////
-	// 텍스트 팩토리
-	IDWriteFactory* m_pDWriteFactory;
-	IDWriteTextFormat* m_pTextFormat;
-	// 폰트 관련
-	//wstring m_MainFont;
-	//FLOAT m_MainFontSize;
-	//m_MainFont = L"맑은 고딕";
-	//m_MainFontSize = 20;
+    // 새로운 기능들
+    void DrawBitmap(ID2D1Bitmap1* bitmap, D2D1_RECT_F dest);
+    void DrawBitmap(ID2D1Bitmap1* bitmap, D2D1_RECT_F destRect, D2D1_RECT_F srcRect, float opacity = 1.0f);
+    void DrawMessage(const wchar_t* text, float left, float top, float width, float height, const D2D1::ColorF& color);
 
-	///////////////////////////////////////////////////////////
-	// 이미지 팩토리
-	//IWICImagingFactory* m_pImageFactory;
+    void SetTransform(const D2D1_MATRIX_3X2_F tm);
 
-	/////////////////////////////////////////////////////
-	// 현재 브러쉬
-	ID2D1SolidColorBrush* m_pNowBrush;
+    // 기존 BeginRender/EndRender를 새로운 이름으로
+    void RenderBegin();
+    void RenderEnd(bool bPresent = true);
+    void Present();
 
-public:
-	HRESULT Initialize(HWND hwnd);
-	void Release();
+    void CreateBitmapFromFile(const wchar_t* path, ID2D1Bitmap1*& outBitmap);
 
-	void BeginRender();
-	void EndRender();
-
-
-	
-
-	void ResizeInEngine(UINT width, UINT height)
-	{
-		m_pRenderTarget->Resize(D2D1::SizeU(width, height));
-	}
-
-public:
-	void DrawSomething();
-	/// 문자 출력
-	void DrawText(float x, float y, const WCHAR* pch, ...);
+    // D3D 리소스 접근자
+    ID3D11Device* GetD3DDevice() const { return m_d3dDevice.Get(); }
+    ID3D11DeviceContext* GetD3DContext() const { return m_d3dContext.Get(); }
+    ID3D11RenderTargetView* GetD3DRenderTargetView() const { return m_d3dRenderTV.Get(); }
 
 private:
+    // 초기화 도우미 메서드들
+    void CreateDeviceAndSwapChain(HWND hwnd);
+    void CreateRenderTargets();
+    void CreateWriteResource();
+    void ReleaseRenderTargets();
 
-	template<class Interface>
-	inline void
-	SafeRelease(
-		Interface** ppInterfaceToRelease
-	)
-	{
-		if (*ppInterfaceToRelease != NULL)
-		{
-			(*ppInterfaceToRelease)->Release();
 
-			(*ppInterfaceToRelease) = NULL;
-		}
-	}
+private:
+	HWND m_hwnd = nullptr;
+
+    // D3D11 리소스들
+    ComPtr<ID3D11Device>           m_d3dDevice;
+    ComPtr<IDXGISwapChain1>        m_swapChain;
+    ComPtr<ID3D11DeviceContext>    m_d3dContext;
+    ComPtr<ID3D11RenderTargetView> m_d3dRenderTV; // D3D render target view
+
+    // D2D 리소스들
+    ComPtr<ID2D1Device7>           m_d2dDevice;
+    ComPtr<ID2D1DeviceContext7>    m_d2dContext;
+    ComPtr<ID2D1Bitmap1>           m_targetBitmap; // D2D render target bitmap
+
+    // 브러쉬들
+    ComPtr<ID2D1SolidColorBrush>   m_brush;        // 기존 m_pNowBrush
+    ComPtr<ID2D1SolidColorBrush>   m_textBrush;
+
+    // 텍스트 관련 (기존 DWrite 관련)
+    ComPtr<IDWriteFactory>         m_dwriteFactory; // 기존 m_pDWriteFactory
+    ComPtr<IDWriteTextFormat>      m_textFormat;    // 기존 m_pTextFormat
+
+    // 이미지 관련
+    ComPtr<IWICImagingFactory>     m_wicFactory;    // 기존 주석처리된 m_pImageFactory
+
+
+
+
 };
+

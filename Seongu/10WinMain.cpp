@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         //MessageBox(nullptr, L"Initialize ½ÇÆÐ!", L"Error", MB_OK);
         return FALSE;
     }
-    gp->MessageLoop();
+    gp->Run();
 
     gp->Release();
 

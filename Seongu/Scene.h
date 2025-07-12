@@ -44,7 +44,11 @@ public:
 	// 초기화
 	virtual void Initialize();
 	virtual void Update(float dTime) abstract;
+	
+	///////////
+	// 랜더러가 여기에 있어서 이사단이 난거임
 	virtual void Draw() abstract;
+
 	virtual void ShowDebug();
 	virtual void Release();
 
