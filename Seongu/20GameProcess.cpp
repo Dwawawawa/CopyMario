@@ -1,6 +1,16 @@
 #include "00pch.h"
 #include "20GameProcess.h"
 
+
+GameProcess::GameProcess()
+    :m_deltaTime(0), m_deltaTimeMS(0), m_totalTime(0)
+{
+}
+
+GameProcess::~GameProcess()
+{
+}
+
 ///////////////////
 //! 이거 되려나?
 //! 되네 이 두 함수는 그냥 들고 가자. 
@@ -36,33 +46,47 @@ std::string WStringToString(const std::wstring& wstr)
 //! 흠... 
 bool GameProcess::Initialize(HINSTANCE hInstance)
 {
-    const wchar_t* className = L"D2DLesson2";
-    const wchar_t* windowName = L"D2DLesson2";
+    // 윈도우 클래스 등록
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = WndProc;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = L"Direct2DWindow";
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    // 창의 템플릿 등록
+    RegisterClass(&wc);
 
-    // 기반 클래스의 Create 호출 (__super::Create와 동일)
-    if (false == __super::Create(className, windowName, SS_XSIZE, SS_YSIZE))
-    {
-        return false;
-    }
+    // 윈도우 생성
+    // 실제 창 만들기
+    HWND m_hwnd = nullptr;
 
-    m_Renderer = std::make_shared<SSEngine>();
-    m_Renderer->Initialize(m_hWnd);
-    
-    ////////////////////////////////////
-    // [ImGUI] 생략
+    m_hwnd = CreateWindow(
+        L"Direct2DWindow",
+        L"다이렉트",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        SS_XSIZE, SS_YSIZE,
+        NULL, NULL, hInstance, NULL
+    );
 
-    ID3D11Device* pd3dDevice = m_Renderer->GetD3DDevice();
+    if (m_hwnd == NULL) return FALSE;
 
-    // 2) 즉시 컨텍스트 얻기
-    ID3D11DeviceContext* pd3dDeviceContext = nullptr;
-    pd3dDeviceContext = m_Renderer->GetD3DContext();
-
+    // 랜더러 초기화
+    m_Renderer = std::make_unique <SSEngine>();
+    m_Renderer->Initialize(m_hwnd);
 
     // 타이머 초기화
     m_pTimer = new GameTimer();
     m_pTimer->Reset();
 
+    // this 포인터를 윈도우에 저장
+    SetWindowLongPtr(m_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+
+    ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+    UpdateWindow(m_hwnd);
+
     return TRUE;
+
 }
 
 void GameProcess::Run()
@@ -87,6 +111,36 @@ void GameProcess::Run()
     }
 }
 
+LRESULT GameProcess::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    //////
+    //WndProc에서 this 복원
+    GameProcess* pThis = reinterpret_cast<GameProcess*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+
+
+    switch (uMsg)
+    {
+    case WM_SIZE:
+    {
+        UINT width = LOWORD(lParam);
+        UINT height = HIWORD(lParam);
+        pThis->GameProcess::OnResize(width, height);
+        break;
+    }
+
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
+
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    }
+
+    return 0;
+}
+
+
+
 
 void GameProcess::UpdateTime()
 {
@@ -94,17 +148,33 @@ void GameProcess::UpdateTime()
     m_pTimer->Tick();
 
     // 델타 타임 얻기
-    m_deltaTime = m_pTimer->DeltaTime();
+    m_deltaTime   = m_pTimer->DeltaTime();
     m_deltaTimeMS = m_pTimer->DeltaTimeMS();
-    m_totalTime = m_pTimer->TotalTime();
+    m_totalTime   = m_pTimer->TotalTime();
+
+
+    woss_m_deltaTime   . str(L"");
+    woss_m_deltaTimeMS . str(L"");
+    woss_m_totalTime   . str(L"");
+
+
+    woss_m_deltaTime.clear();
+    woss_m_deltaTimeMS.clear();
+    woss_m_totalTime.clear();
+
+    woss_m_deltaTime   << m_deltaTime;
+    woss_m_deltaTimeMS << m_deltaTimeMS;
+    woss_m_totalTime   << m_totalTime;
 }
 
 void GameProcess::UpdateInput()
 {
+
 }
 
 void GameProcess::UpdateLogic()
 {
+
 }
 
 void GameProcess::Render()
@@ -113,7 +183,11 @@ void GameProcess::Render()
 
     m_Renderer->RenderBegin();
 
-    m_Renderer->DrawCircle(100, 100, 12, D2D1::ColorF(1, 1, 1));
+    m_Renderer->DrawCircle(100, 100, 102, D2D1::ColorF::AliceBlue);
+    
+    
+    m_Renderer->DrawMessage((woss_m_totalTime.str() + std::wstring(L" dads")).c_str()
+        , 2.f, 2.f, 1000.f, 1000.f, D2D1::ColorF::AliceBlue);
 
     m_Renderer->RenderEnd(true);
 }
@@ -130,17 +204,8 @@ void GameProcess::Finalize()
     }
 }
 
-////////////////////////////////
-//! 얜 살릴 필요가 있는데, JJ엔진에는 어디에 있을까?
-//! 이겜은 리사이즈가 없음!
-//! 그럼 이건 내 창작이겠네?
-//! 가보자구
-//! 
+
 void GameProcess::OnResize(int width, int height)
 {
-    __super::OnResize(width, height);
-
-    if (m_Renderer != nullptr) m_Renderer->Resize(width, height);
-
-
+    m_Renderer->Resize(width, height);
 }

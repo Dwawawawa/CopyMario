@@ -4,12 +4,15 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+    HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
     std::unique_ptr<GameProcess> gp = std::make_unique<GameProcess>();
 
     if (!gp->Initialize(hInstance)) {
-        //MessageBox(nullptr, L"Initialize 실패!", L"Error", MB_OK);
+        MessageBox(nullptr, L"Initialize 실패!", L"Error", MB_OK);
         return FALSE;
     }
+
     gp->Run();
 
     gp->Finalize();

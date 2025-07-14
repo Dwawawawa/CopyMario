@@ -19,6 +19,9 @@
 #include <d2d1.h>
 #include <dwrite.h>
 
+#include <iostream>
+#include <sstream>						// float∏¶ wstring¿∏∑Œ 
+
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")
 
