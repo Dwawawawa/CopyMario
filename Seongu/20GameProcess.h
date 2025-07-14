@@ -1,30 +1,29 @@
 #pragma once
+#include "19WndBase.h" 
+#include <memory>
 
 class GameTimer;
 class SceneManager;
 
-class GameProcess
+class GameProcess : public NzWndBase
 {
 public:
-	GameProcess();
-	~GameProcess();
+	GameProcess() = default;
+	~GameProcess() = default;
 
 	bool Initialize(HINSTANCE hInstance);
-	void Release();
+	void Finalize();
 
 	void Run();
 	
-
-	static LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-public:
-	
-
+private:
 	void UpdateTime();
 	void UpdateInput();
 	void UpdateLogic();
+
 	void Render();
 
-	void CreateManager();
+	
 	//void LoadResources();
 	//void CreateFileFolder();
 	//void CreateScene();
@@ -33,13 +32,10 @@ public:
 
 	////////////////
 	// ÇïÇÁ ÇÔ¼ö
-	static void OnResize(UINT width, UINT height);
+	void OnResize(int width, int height);
 
-private:
-	/// <summary>
-	/// ¾êµµ »èÁ¦ÇÏ°í
-	/// </summary>
-	HWND m_hwnd;
+
+	std::shared_ptr<SSEngine> m_Renderer = nullptr; 
 
 	GameTimer* m_pTimer;
 	float m_deltaTime;

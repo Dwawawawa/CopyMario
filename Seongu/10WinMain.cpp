@@ -12,7 +12,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     gp->Run();
 
-    gp->Release();
+    gp->Finalize();
 
     return 0;
 }

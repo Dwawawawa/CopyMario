@@ -1,50 +1,66 @@
 #include "00pch.h"
 #include "20GameProcess.h"
 
-GameProcess::GameProcess()
-    :m_pTimer(nullptr), m_hwnd(nullptr)
-    ,m_deltaTime(0),m_deltaTimeMS(0),m_totalTime(0)
+///////////////////
+//! 이거 되려나?
+//! 되네 이 두 함수는 그냥 들고 가자. 
+std::wstring ConvertToWString(const std::string& str)
 {
+    size_t len = 0;
+    mbstowcs_s(&len, nullptr, 0, str.c_str(), _TRUNCATE);
+    if (len == 0)
+        return L"";
+
+    std::wstring wstr(len, L'\0');
+    mbstowcs_s(&len, &wstr[0], len, str.c_str(), _TRUNCATE);
+    wstr.resize(len - 1); // Remove the null terminator added by mbstowcs_s  
+    return wstr;
 }
 
-GameProcess::~GameProcess()
+std::string WStringToString(const std::wstring& wstr)
 {
+    size_t len = 0;
+    wcstombs_s(&len, nullptr, 0, wstr.c_str(), _TRUNCATE);
+    if (len == 0)
+        return "";
+    std::string str(len, '\0');
+    wcstombs_s(&len, &str[0], len, wstr.c_str(), _TRUNCATE);
+    str.resize(len - 1); // Remove the null terminator added by wcstombs_s
+    return str;
 }
 
+
+////////////////////////////////
+//! 교수님 코드와 달리 NzWndBase를 상속하지 않기 때문에 
+//! 수정사항이 꽤나 많다. 
+//! 흠... 
 bool GameProcess::Initialize(HINSTANCE hInstance)
 {
+    const wchar_t* className = L"D2DLesson2";
+    const wchar_t* windowName = L"D2DLesson2";
+
+    // 기반 클래스의 Create 호출 (__super::Create와 동일)
+    if (false == __super::Create(className, windowName, SS_XSIZE, SS_YSIZE))
+    {
+        return false;
+    }
+
+    m_Renderer = std::make_shared<SSEngine>();
+    m_Renderer->Initialize(m_hWnd);
+    
+    ////////////////////////////////////
+    // [ImGUI] 생략
+
+    ID3D11Device* pd3dDevice = m_Renderer->GetD3DDevice();
+
+    // 2) 즉시 컨텍스트 얻기
+    ID3D11DeviceContext* pd3dDeviceContext = nullptr;
+    pd3dDeviceContext = m_Renderer->GetD3DContext();
 
 
-    // 윈도우 클래스 등록
-    WNDCLASS wc = {};
-    wc.lpfnWndProc = WndProc;
-    wc.hInstance = hInstance;
-    wc.lpszClassName = L"Direct2DWindow";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    // 창의 템플릿 등록
-    RegisterClass(&wc);
-
-    // 윈도우 생성
-    // 실제 창 만들기
-    m_hwnd = CreateWindow(
-        L"Direct2DWindow",
-        L"다이렉트",
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        SS_XSIZE, SS_YSIZE,
-        NULL, NULL, hInstance, NULL
-    );
-
-    if (m_hwnd == NULL) return FALSE;
-
-
-
-    CreateManager();
-
-
-    ShowWindow(m_hwnd, SW_SHOWDEFAULT);
-    UpdateWindow(m_hwnd);
+    // 타이머 초기화
+    m_pTimer = new GameTimer();
+    m_pTimer->Reset();
 
     return TRUE;
 }
@@ -54,17 +70,12 @@ void GameProcess::Run()
     // 메시지 루프
     MSG msg = {};
 
-    while (true)
+    while (msg.message != WM_QUIT)
     {
         if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-
-            if (msg.message == WM_QUIT)
-            {
-                break;
-            }
         }
         else
         {
@@ -98,68 +109,25 @@ void GameProcess::UpdateLogic()
 
 void GameProcess::Render()
 {
+    if (m_Renderer == nullptr) return;
 
-    SSEngine::GetInstance()->BeginRender();
-    SSEngine::GetInstance()->DrawSomething();
+    m_Renderer->RenderBegin();
 
+    m_Renderer->DrawCircle(100, 100, 12, D2D1::ColorF(1, 1, 1));
 
-    if(1)
-    {
-        SSEngine::GetInstance()->DrawText(0, 0, L"TotalTime : %.2f sec", m_totalTime);
-        SSEngine::GetInstance()->DrawText(0, 20, L"DeltaTime : %4f sec", m_deltaTime);
-        SSEngine::GetInstance()->DrawText(0, 40, L"DeltaTimeMS : %.2f ms", m_deltaTimeMS);
-        SSEngine::GetInstance()->DrawText(0, 60, L"FPS : %.0f", 1.0f / m_deltaTime);
-    }
-
-    SSEngine::GetInstance()->EndRender();
+    m_Renderer->RenderEnd(true);
 }
 
-void GameProcess::CreateManager()
+
+void GameProcess::Finalize()
 {
-    // 엔진 생성
-    SSEngine::GetInstance()->Initialize(m_hwnd);
+    // [ImGUI] 생략
 
-    // 타이머 생성
-    m_pTimer = new GameTimer();
-    m_pTimer->Reset();
-
-
-    // 인풋, 사운드 여기서 만들면 됨
-}
-
-void GameProcess::Release()
-{
-
-    if (m_pTimer != nullptr)
+    if (m_Renderer != nullptr)
     {
-        delete m_pTimer;
-        m_pTimer = nullptr;
+        m_Renderer->Uninitialize();
+        m_Renderer.reset();
     }
-
-    SSEngine::GetInstance()->Release();
-}
-
-LRESULT CALLBACK GameProcess::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-    case WM_SIZE:
-    {
-        UINT width = LOWORD(lParam);
-        UINT height = HIWORD(lParam);
-        GameProcess::OnResize(width, height);
-        break;
-    }
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-
-    default:
-        return DefWindowProc(hwnd, uMsg, wParam, lParam);
-    }
-
-    return 0;
 }
 
 ////////////////////////////////
@@ -168,8 +136,11 @@ LRESULT CALLBACK GameProcess::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
 //! 그럼 이건 내 창작이겠네?
 //! 가보자구
 //! 
-void GameProcess::OnResize(UINT width, UINT height)
+void GameProcess::OnResize(int width, int height)
 {
-    SSEngine::GetInstance()->ResizeInEngine(width, height);
+    __super::OnResize(width, height);
+
+    if (m_Renderer != nullptr) m_Renderer->Resize(width, height);
+
 
 }
