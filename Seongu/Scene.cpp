@@ -3,12 +3,12 @@
 // 완전히 인터페이스로 빼는 게 더 좋아 보인다.
 #include "00pch.h"
 #include "Scene.h"
+#include "SceneIntro.h"
 
 //#include "Button.h"
 //#include "ObjectManager.h"
 
 Scene::Scene()
-	:/*m_pObjectManager(nullptr),*/ m_NowSceneState(eNowSceneState::NONE), m_IsGameEnd(false)
 {
 
 }
@@ -20,9 +20,7 @@ Scene::~Scene()
 
 void Scene::Initialize()
 {
-	// 씬마다 오브젝트 매니저 생성
-	//m_pObjectManager = new ObjectManager();
-
+	
 }
 
 void Scene::ShowDebug()

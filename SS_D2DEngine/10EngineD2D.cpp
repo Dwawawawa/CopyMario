@@ -1,6 +1,7 @@
 ﻿#include "00pch.h"
 #include "10EngineD2D.h"
-
+#include <stdarg.h>
+#include <stdio.h>
 
 
 
@@ -88,24 +89,33 @@ void SSEngine::DrawBitmap(ID2D1Bitmap1* bitmap, D2D1_RECT_F destRect, D2D1_RECT_
 	);
 }
 
-void SSEngine::DrawMessage(const wchar_t* text, float left, float top, float width, float height, const D2D1::ColorF& color)
+
+void SSEngine::DrawMessage(float left, float top, float width, float height, const D2D1::ColorF& color, const wchar_t* format, ...)
 {
+
+	wchar_t buffer[1024];  // 고정 크기 버퍼로 테스트
+
+	// 가변 인자 처리
+	va_list args;
+	va_start(args, format);
+	int result = vswprintf_s(buffer, 1024, format, args);  // 결과 확인
+	va_end(args);
+
 	if (nullptr == m_textBrush)
 	{
 		m_d2dContext->CreateSolidColorBrush(D2D1::ColorF(color), &m_textBrush);
 	}
-
 	m_textBrush->SetColor(color);
 	D2D1_RECT_F layoutRect = D2D1::RectF(left, top, left + width, top + height);
-
 	m_d2dContext->DrawTextW(
-		text,
-		static_cast<UINT32>(wcslen(text)),
+		buffer,
+		static_cast<UINT32>(wcslen(buffer)),
 		m_textFormat.Get(),
 		layoutRect,
 		m_textBrush.Get(),
 		D2D1_DRAW_TEXT_OPTIONS_NONE,
 		DWRITE_MEASURING_MODE_NATURAL);
+
 }
 
 void SSEngine::SetTransform(const D2D1_MATRIX_3X2_F tm)
@@ -448,7 +458,7 @@ void SSEngine::CreateWriteResource()
 	DX::ThrowIfFailed(hr);
 
 	writeFactory->CreateTextFormat(
-		L"", // FontName    제어판-모든제어판-항목-글꼴-클릭 으로 글꼴이름 확인가능
+		L"맑은 고딕", //L"", // FontName    제어판-모든제어판-항목-글꼴-클릭 으로 글꼴이름 확인가능
 		NULL,
 		DWRITE_FONT_WEIGHT_NORMAL,
 		DWRITE_FONT_STYLE_NORMAL,

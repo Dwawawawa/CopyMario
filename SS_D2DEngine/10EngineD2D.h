@@ -1,19 +1,12 @@
 #pragma once
-#include <wrl/client.h>
-#include <d2d1_3.h>
-#include <d2d1helper.h>
-#include <d3d11_1.h>
-#include <dxgi1_2.h>
-#include <dwrite.h>
-#include <wincodec.h>
-#include <string>
-
-#pragma comment(lib, "D2D1.lib")
-#pragma comment(lib, "D3D11.lib")
-#pragma comment(lib, "DXGI.lib")
-#pragma comment(lib, "dwrite.lib")
-#pragma comment(lib, "windowscodecs.lib")
-
+// COM 및 DirectX 인터페이스
+#include <wrl/client.h>              // ComPtr
+#include <d3d11.h>                   // Direct3D 11
+#include <dxgi1_6.h>                 // DXGI 1.6 (Windows 10 이상 최신 스왑체인)
+#include <d2d1_3.h>                  // Direct2D 1.3 (ID2D1Factory4)
+#include <d2d1_3helper.h>            // D2D1::Helper 클래스들
+#include <dwrite_3.h>                // DirectWrite (최신 텍스트 엔진)
+#include <wincodec.h>                // WIC (이미지 로딩)
 using namespace Microsoft::WRL;
 
 class SSEngine
@@ -35,7 +28,7 @@ public:
     // 새로운 기능들
     void DrawBitmap(ID2D1Bitmap1* bitmap, D2D1_RECT_F dest);
     void DrawBitmap(ID2D1Bitmap1* bitmap, D2D1_RECT_F destRect, D2D1_RECT_F srcRect, float opacity = 1.0f);
-    void DrawMessage(const wchar_t* text, float left, float top, float width, float height, const D2D1::ColorF& color);
+    void DrawMessage( float left, float top, float width, float height, const D2D1::ColorF& color, const wchar_t* text, ...);
 
     void SetTransform(const D2D1_MATRIX_3X2_F tm);
 

@@ -3,7 +3,7 @@
 
 
 GameProcess::GameProcess()
-    :m_deltaTime(0), m_deltaTimeMS(0), m_totalTime(0)
+    :m_deltaTime(0)
 {
 }
 
@@ -71,8 +71,14 @@ bool GameProcess::Initialize(HINSTANCE hInstance)
 
     if (m_hwnd == NULL) return FALSE;
 
+    ///////////////////////////////////////////////////////////////////
+    //! 초기화 하는 곳
+
+    // 씬 매니저 초기화
+    SceneManager::GetInstance()->Initialize();
+
     // 랜더러 초기화
-    m_Renderer = std::make_unique <SSEngine>();
+    m_Renderer = std::make_unique<SSEngine>();
     m_Renderer->Initialize(m_hwnd);
 
     // 타이머 초기화
@@ -82,6 +88,8 @@ bool GameProcess::Initialize(HINSTANCE hInstance)
     // this 포인터를 윈도우에 저장
     SetWindowLongPtr(m_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
+
+    ///////////////////////////////////////////////////////////////////
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
     UpdateWindow(m_hwnd);
 
@@ -147,24 +155,14 @@ void GameProcess::UpdateTime()
     // 타이머 틱 (매 프레임마다 가장 먼저!)
     m_pTimer->Tick();
 
+    //////////////////////////////////
     // 델타 타임 얻기
     m_deltaTime   = m_pTimer->DeltaTime();
-    m_deltaTimeMS = m_pTimer->DeltaTimeMS();
-    m_totalTime   = m_pTimer->TotalTime();
-
-
-    woss_m_deltaTime   . str(L"");
-    woss_m_deltaTimeMS . str(L"");
-    woss_m_totalTime   . str(L"");
-
-
+    woss_m_deltaTime.str(L"");
     woss_m_deltaTime.clear();
-    woss_m_deltaTimeMS.clear();
-    woss_m_totalTime.clear();
+    woss_m_deltaTime << m_deltaTime;
 
-    woss_m_deltaTime   << m_deltaTime;
-    woss_m_deltaTimeMS << m_deltaTimeMS;
-    woss_m_totalTime   << m_totalTime;
+    
 }
 
 void GameProcess::UpdateInput()
@@ -174,8 +172,24 @@ void GameProcess::UpdateInput()
 
 void GameProcess::UpdateLogic()
 {
+    tempTime += m_deltaTime;  // 이 라인이 있는지 확인
 
+    if (tempTime > 3.f) {
+        
+        tempint++;
+
+        // COUNT 넘지 않게 처리
+        if (tempint >= static_cast<int>(SceneType::COUNT)) {
+            tempint = 0;
+        }
+
+        SceneManager::GetInstance()->ChangeScene(SceneType(tempint));
+        tempTime = 0;
+    }
+    SceneManager::GetInstance()->Update(m_deltaTime);
 }
+
+
 
 void GameProcess::Render()
 {
@@ -183,11 +197,29 @@ void GameProcess::Render()
 
     m_Renderer->RenderBegin();
 
-    m_Renderer->DrawCircle(100, 100, 102, D2D1::ColorF::AliceBlue);
+    m_Renderer->DrawCircle(500, 500, 102, D2D1::ColorF::HotPink);
     
-    
-    m_Renderer->DrawMessage((woss_m_totalTime.str() + std::wstring(L" dads")).c_str()
-        , 2.f, 2.f, 1000.f, 1000.f, D2D1::ColorF::AliceBlue);
+    SceneManager::GetInstance()->Render(m_Renderer);
+
+    m_Renderer->DrawMessage(
+         2.f, 2.f, 1000.f, 1000.f, D2D1::ColorF::HotPink
+    , L"델타타임: %.4f", m_deltaTime
+    );
+
+    m_Renderer->DrawMessage(
+        2.f, 17.f, 1000.f, 1000.f, D2D1::ColorF::HotPink
+        , L"템프타임: %.4f", tempTime
+    );
+
+    m_Renderer->DrawMessage(
+        2.f, 32.f, 1000.f, 1000.f, D2D1::ColorF::AliceBlue
+        , L"m_CurrentSceneType: %d", SceneManager::GetInstance()->GetCurrentSceneType()
+    );
+
+    m_Renderer->DrawMessage(
+        2.f, 47.f, 1000.f, 1000.f, D2D1::ColorF::HotPink
+        , L"템프인트: %d", tempint
+    );
 
     m_Renderer->RenderEnd(true);
 }

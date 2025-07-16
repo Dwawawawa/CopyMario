@@ -14,12 +14,12 @@
 |---------|------|------|
 | `main` | 최종 완성 버전 | 🎯 완료 |
 | `OnlySeongu` | 엔진 분리 없이 게임로직만 구현 | 🎯 완료  |
-| `BasicEngine` | SSEngine 기본 구조 분리 | 🔄 진행중 |
+| `BasicEngine` | SSEngine 기본 구조 분리 | 🎯 완료 |
 | `RenderFocus` | 렌더링 시스템 집중 개발 | 📋 예정 |
 | `AnimationMaster` | 애니메이션 시스템 완성 | 📋 예정 |
 | `ShaderMario` | 쉐이더 적용된 마리오 구현 | 📋 예정 |
 | `PhysicsComplete` | 물리 엔진 완성 | 📋 예정 |
-| `ThreeScenes` | 3개 씬 구현 완료 | 📋 예정 |
+| `ThreeScenes` | 3개 씬 구현 완료 | 🔄 진행중  |
 | `PolishedGame` | 최종 다듬기 및 최적화 | 📋 예정 |
 
 ### 브랜치 전환 가이드

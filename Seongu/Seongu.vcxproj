@@ -122,7 +122,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>00pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../SS_D2DEngine</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,7 +140,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="30GameObject.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneBlack.cpp" />
+    <ClCompile Include="SceneIngame.cpp" />
+    <ClCompile Include="SceneIntro.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneOutro.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00pch.h" />
@@ -148,7 +154,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="30GameObject.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneBlack.h" />
+    <ClInclude Include="SceneIngame.h" />
+    <ClInclude Include="SceneIntro.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SceneOutro.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

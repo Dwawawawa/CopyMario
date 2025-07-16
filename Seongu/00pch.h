@@ -25,7 +25,10 @@
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dwrite.lib")
 
-#include <memory>						//유니크포인터
+#include <memory>
+#include <unordered_map>
+#include <functional>
+#include <vector>				
 
 
 #define SS_XSIZE 1280
@@ -58,6 +61,9 @@
 //! 
 #include "10EngineD2D.h"
 #include "20GameTimer.h"
+#include "30GameObject.h" // GameObject 클래스의 정의를 포함하는 헤더 파일 추가
+#include "SceneManager.h"
+
 
 #ifdef _DEBUG
 #pragma comment(lib, "x64/Debug/SS_D2DEngine.lib") 
