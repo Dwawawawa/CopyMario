@@ -141,9 +141,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="30GameObject.cpp" />
-    <ClCompile Include="30ObjectManager.cpp" />
-    <ClCompile Include="31Component.cpp">
+    <ClCompile Include="31Component.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="32Movement.cpp" />
+    <ClCompile Include="32Renderer.cpp" />
+    <ClCompile Include="32Transform.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Scene.cpp" />
@@ -169,11 +173,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="30GameObject.h" />
-    <ClInclude Include="30ObjectManager.h" />
-    <ClInclude Include="31Component.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="32Movement.h" />
+    <ClInclude Include="32Renderer.h" />
+    <ClInclude Include="32Transform.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneBlack.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

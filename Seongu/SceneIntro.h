@@ -1,3 +1,4 @@
+// SceneIntro.h
 #pragma once
 #include "Scene.h"
 
@@ -8,17 +9,11 @@ class ObjectManager;
 class SceneIntro : public Scene
 {
 public:
-	SceneIntro();
-	virtual ~SceneIntro();
+    SceneIntro() = default;
+    virtual ~SceneIntro() = default;
 
-	// Scene을(를) 통해 상속됨
-	virtual void Initialize() override;
-	virtual void Update(float dTime) override;
-	virtual void ShowDebug() override;
-	virtual void Release() override;
-
-	virtual void Render(std::shared_ptr<SSEngine> Renderer) override;
-
+    void Initialize() override;
+    void Update(float dTime) override;
 private:
 
 	

@@ -1,33 +1,57 @@
+//30GameObject.cpp
 #include "00pch.h"
 #include "30GameObject.h"
-
+#include "32Transform.h"
 
 GameObject::GameObject()
 {
-    x = 300, y = 300;          // 현재 위치
-    width = 100, height = 100; // 크기
-    speed = 0.5f;         // 이동 속도
-    direction = 1;       // 이동 방향 (1: 오른쪽, -1: 왼쪽)
+	m_transform = AddComponent<Transform>();
 }
 
 GameObject::~GameObject()
 {
+	Release();
 }
 
-void GameObject::patrol(float y)
+void GameObject::Initialize()
 {
-    this->y = y;
-
-    if (x > 800) 
-        direction = -1;
-    else if(x < 0)
-        direction = 1;
-
-    x = x + speed * direction;
+    for (auto& component : m_components)
+    {
+        component->Initialize();
+    }
 }
 
-
-void GameObject::Update()
+void GameObject::Update(float deltaTime)
 {
-   
+    if (!m_isActive) return;
+
+    for (auto& component : m_components)
+    {
+        if (component->IsActive())
+        {
+            component->Update(deltaTime);
+        }
+    }
+}
+
+void GameObject::Render(std::shared_ptr<SSEngine> renderer)
+{
+    if (!m_isActive) return;
+
+    for (auto& component : m_components)
+    {
+        if (component->IsActive())
+        {
+            component->Render(renderer);
+        }
+    }
+}
+
+void GameObject::Release()
+{
+    for (auto& component : m_components)
+    {
+        component->Release();
+    }
+    m_components.clear();
 }

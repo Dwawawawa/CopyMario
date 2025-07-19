@@ -45,10 +45,16 @@
     <ClCompile Include="SceneOutro.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="31Component.cpp">
+    <ClCompile Include="31Component.h">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="32Movement.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="30ObjectManager.cpp">
+    <ClCompile Include="32Renderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="32Transform.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,10 +86,13 @@
     <ClInclude Include="SceneOutro.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="31Component.h">
+    <ClInclude Include="32Transform.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="30ObjectManager.h">
+    <ClInclude Include="32Movement.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="32Renderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

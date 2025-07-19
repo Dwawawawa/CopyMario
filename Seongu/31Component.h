@@ -1,45 +1,28 @@
+// 31Component.h
+#include "00pch.h"
 #pragma once
 
-#include <string>
-#include <vector>
-#include <functional>
-#include <unordered_map>
-
-namespace mycore
-{
-    using MessageID = uint32_t;
-}
-
-
 class GameObject;
+class SSEngine;
 
 class Component
 {
 public:
+    Component() = default;
     virtual ~Component() = default;
-    virtual void Update(float dt) = 0;
-    virtual void OnEvent(const std::string& ev) abstract;
 
-    void HandleMessage(mycore::MessageID msg, void* data)
-    {
-        auto it = m_MessageHandlers.find(msg);
-        if (it != m_MessageHandlers.end())
-        {
-            for (auto& handler : it->second)
-                handler(data);
-        }
-    }
+    virtual void Initialize() {}
+    virtual void Update(float deltaTime) {}
+    virtual void Render(std::shared_ptr<SSEngine> renderer) {}
+    virtual void Release() {}
 
-    using HandlerType = std::function<void(void*)>;
-    void RegisterMessageHandler(mycore::MessageID msg, HandlerType handler)
-    {
-        m_MessageHandlers[msg].push_back(std::move(handler));
-    }
+    void SetOwner(GameObject* owner) { m_owner = owner; }
+    GameObject* GetOwner() const { return m_owner; }
 
-    void SetOwner(GameObject* owner) { m_Owner = owner; }
+    bool IsActive() const { return m_isActive; }
+    void SetActive(bool active) { m_isActive = active; }
 
 protected:
-    GameObject* m_Owner = nullptr;
-
-    std::unordered_map<mycore::MessageID, std::vector<HandlerType>> m_MessageHandlers;
+    GameObject* m_owner = nullptr;
+    bool m_isActive = true;
 };

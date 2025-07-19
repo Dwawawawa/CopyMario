@@ -1,61 +1,79 @@
-/////
-// 씬 클래스 상당히 안좋아 보이면 개추'
-// 완전히 인터페이스로 빼는 게 더 좋아 보인다.
+// Scene.cpp
 #include "00pch.h"
 #include "Scene.h"
-#include "SceneIntro.h"
-//#include "Button.h"
-#include "30ObjectManager.h"
-
-Scene::Scene()
-{
-
-}
-
-Scene::~Scene()
-{
-
-}
+#include "30GameObject.h"
 
 void Scene::Initialize()
 {
-	
+    for (auto& gameObject : m_gameObjects)
+    {
+        gameObject->Initialize();
+    }
 }
 
-void Scene::ShowDebug()
+void Scene::Update(float deltaTime)
 {
-	static bool _IsDebugShow = false;
+    // 활성화된 게임오브젝트들만 업데이트
+    for (auto& gameObject : m_gameObjects)
+    {
+        if (gameObject->IsActive())
+        {
+            gameObject->Update(deltaTime);
+        }
+    }
 
-	//if (InputManager::GetInstance()->CheckF5ButtonUp())
-	//{
-	//	if (!_IsDebugShow)
-	//		_IsDebugShow = true;
-	//	else
-	//		_IsDebugShow = false;
+    ProcessPendingDestroy();
+}
 
-	//	InputManager::GetInstance()->Reset();
-	//}
-
-	if (!_IsDebugShow)
-	{
-		return;
-	}
+void Scene::Render(std::shared_ptr<SSEngine> renderer)
+{
+    for (auto& gameObject : m_gameObjects)
+    {
+        if (gameObject->IsActive())
+        {
+            gameObject->Render(renderer);
+        }
+    }
 }
 
 void Scene::Release()
 {
-	//m_pObjectManager->Release();
-
-	// 오브젝트 매니저 제거
-	//if (m_pObjectManager != nullptr)
-	//{
-	//	delete(m_pObjectManager);
-	//	m_pObjectManager = nullptr;
-	//}
+    for (auto& gameObject : m_gameObjects)
+    {
+        gameObject->Release();
+    }
+    m_gameObjects.clear();
+    m_pendingDestroy.clear();
 }
 
-
-void Scene::Render(std::shared_ptr<SSEngine> Renderer) 
+GameObject* Scene::CreateGameObject()
 {
+    auto gameObject = std::make_unique<GameObject>();
+    GameObject* ptr = gameObject.get();
+    m_gameObjects.push_back(std::move(gameObject));
+    ptr->Initialize();
+    return ptr;
+}
 
+void Scene::DestroyGameObject(GameObject* gameObject)
+{
+    m_pendingDestroy.push_back(gameObject);
+}
+
+void Scene::ProcessPendingDestroy()
+{
+    for (GameObject* gameObject : m_pendingDestroy)
+    {
+        auto it = std::find_if(m_gameObjects.begin(), m_gameObjects.end(),
+            [gameObject](const std::unique_ptr<GameObject>& ptr) {
+                return ptr.get() == gameObject;
+            });
+
+        if (it != m_gameObjects.end())
+        {
+            (*it)->Release();
+            m_gameObjects.erase(it);
+        }
+    }
+    m_pendingDestroy.clear();
 }
