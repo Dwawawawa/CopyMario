@@ -4,9 +4,8 @@
 #include "00pch.h"
 #include "Scene.h"
 #include "SceneIntro.h"
-
 //#include "Button.h"
-//#include "ObjectManager.h"
+#include "30ObjectManager.h"
 
 Scene::Scene()
 {
@@ -53,4 +52,10 @@ void Scene::Release()
 	//	delete(m_pObjectManager);
 	//	m_pObjectManager = nullptr;
 	//}
+}
+
+
+void Scene::Render(std::shared_ptr<SSEngine> Renderer) 
+{
+
 }

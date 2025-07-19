@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GameProcess" Collapsed="true">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgACEAAAAAEAAQAARgAQQAAAAAAAgAAAABAAQQAAIAI=</HashCode>
+      <FileName>20GameProcess.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameObject" Collapsed="true">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAIIAQAQAAAAABAAAEAAQAAYABgAEIAAEA=</HashCode>
+      <FileName>30GameObject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Component" Collapsed="true">
+    <Position X="9.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQgAABIAAAAAAAABEAAAAAAAAIAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>31Component.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAAAAAAAAQAAgAAAAAAAQAAAAAAAABACABAAAAA=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneBlack" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAgAQAAQAAAAAgAAAAAAAAAAAAAEACABAAAAA=</HashCode>
+      <FileName>SceneBlack.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneIngame" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAABAQAAAAAgAAAAAAAAAAAAAEACABAAACA=</HashCode>
+      <FileName>SceneIngame.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneIntro" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAFACQBAAAAA=</HashCode>
+      <FileName>SceneIntro.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneManager" Collapsed="true">
+    <Position X="11.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQQACAAAAAAAAUAgAiACAAAABAAAAggAAhAQARAAAgQ=</HashCode>
+      <FileName>SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneOutro" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAQAAAAAgAAAACAAAAAAAAEAiABAAAAA=</HashCode>
+      <FileName>SceneOutro.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObjectManager" Collapsed="true">
+    <Position X="9.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAIAAAAAAAAAQAAAAAAAAAAIBAAAAAAAAA=</HashCode>
+      <FileName>30ObjectManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="SceneType" Collapsed="true">
+    <Position X="9.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABgAAAAAAAAAAAAAABAAECAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

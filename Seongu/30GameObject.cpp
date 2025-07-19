@@ -25,3 +25,9 @@ void GameObject::patrol(float y)
 
     x = x + speed * direction;
 }
+
+
+void GameObject::Update()
+{
+   
+}

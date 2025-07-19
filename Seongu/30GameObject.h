@@ -5,6 +5,8 @@ public:
     GameObject();
     ~GameObject();
 
+
+    void Update();
     void patrol(float y);
 
     // 위치 관련 get 함수
@@ -29,3 +31,11 @@ private:
     //Color color;
     //Texture* texture;
 };
+
+
+
+
+
+
+///////////////////////////////////////
+//! 게임 오브젝트는 숫자 정보만 갖고 있어. 

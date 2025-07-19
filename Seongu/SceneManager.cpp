@@ -2,9 +2,9 @@
 #include "00pch.h"
 #include "SceneManager.h"
 #include "SceneIntro.h"
-#include "SceneIngame.h"
-#include "SceneBlack.h"
-#include "SceneOutro.h"
+//#include "SceneIngame.h"
+//#include "SceneBlack.h"
+//#include "SceneOutro.h"
 #include "10EngineD2D.h" // 가정한 렌더러 헤더
 
 SceneManager* SceneManager::s_Instance = nullptr;
@@ -43,9 +43,9 @@ void SceneManager::Initialize()
 {
     // 씬 팩토리 등록 (람다 함수로 팩토리 패턴 구현)
     RegisterScene(SceneType::INTRO, []() { return std::make_unique<SceneIntro>(); });
-    RegisterScene(SceneType::INGAME1_1, []() { return std::make_unique<SceneIngame>(); });
-    RegisterScene(SceneType::BLACK, []() { return std::make_unique<SceneBlack>(); });
-    RegisterScene(SceneType::OUTRO, []() { return std::make_unique<SceneOutro>(); });
+    //RegisterScene(SceneType::INGAME1_1, []() { return std::make_unique<SceneIngame>(); });
+    //RegisterScene(SceneType::BLACK, []() { return std::make_unique<SceneBlack>(); });
+    //RegisterScene(SceneType::OUTRO, []() { return std::make_unique<SceneOutro>(); });
 
 
     // 초기 씬 생성
@@ -88,26 +88,11 @@ void SceneManager::Render(std::shared_ptr<SSEngine> Renderer)
 {
     if (!Renderer) return;
 
-    m_Renderer = Renderer;
-
     // 현재 씬 렌더링
     if (m_CurrentScene)
     {
-        // 씬의 렌더링 로직을 여기서 처리하거나
-        // 씬 자체에 Render 함수를 만들어서 호출
-        auto renderObjects = m_CurrentScene->GetRenderObjects();
-        for (auto& obj : renderObjects)
-        {
-            m_Renderer->DrawRectangle(
-                obj->GetX(), obj->GetY(),
-                obj->GetX() + obj->GetWidth(),
-                obj->GetY() + obj->GetHeight(),
-                D2D1::ColorF::Tomato
-            );
-        }
+        m_CurrentScene->Render(Renderer);
     }
-
- 
 }
 
 void SceneManager::ChangeScene(SceneType type)

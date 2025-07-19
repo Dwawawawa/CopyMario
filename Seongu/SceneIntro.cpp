@@ -1,7 +1,7 @@
 #include "00pch.h"
 #include "SceneIntro.h"
 #include "30GameObject.h"
-
+#include "30ObjectManager.h"
 
 SceneIntro::SceneIntro()
 {
@@ -10,19 +10,24 @@ SceneIntro::SceneIntro()
 
 SceneIntro::~SceneIntro()
 {
-
+	
 }
 
 void SceneIntro::Initialize()
 {
-	m_tempObj = std::make_shared<GameObject>();
+	m_pObjectManager = std::make_unique<ObjectManager>();
+	
 }
 
 void SceneIntro::Update(float dTime)
 {
-	m_tempObj->patrol(100);
+	m_pObjectManager->Update(dTime);
 }
 
+void SceneIntro::Render(std::shared_ptr<SSEngine> Renderer)
+{
+	m_pObjectManager->Render(Renderer);
+}
 
 void SceneIntro::ShowDebug()
 {
@@ -34,14 +39,4 @@ void SceneIntro::Release()
 
 }
 
-std::vector<std::shared_ptr<GameObject>> SceneIntro::GetRenderObjects() const
-{
 
-	std::vector<std::shared_ptr<GameObject>> objects = {};
-
-	if (m_tempObj) {
-		objects.push_back(m_tempObj);
-	}
-
-	return objects;
-}

@@ -2,7 +2,8 @@
 #include "Scene.h"
 
 class GameObject;
-
+class SSEngine;
+class ObjectManager;
 
 class SceneIntro : public Scene
 {
@@ -16,7 +17,8 @@ public:
 	virtual void ShowDebug() override;
 	virtual void Release() override;
 
-	std::vector<std::shared_ptr<GameObject>> GetRenderObjects() const;
+	virtual void Render(std::shared_ptr<SSEngine> Renderer) override;
+
 private:
 
 	
