@@ -54,19 +54,13 @@
     <ClCompile Include="32Renderer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="32Transform.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="32InputComponent.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="32PhysicsComponent.h">
-      <Filter>헤더 파일</Filter>
     </ClCompile>
     <ClCompile Include="32ColliderComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="32PhysicsComponent.cpp">
+    <ClCompile Include="32PhysicsC.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -111,6 +105,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="32ColliderComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="32PhysicsComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

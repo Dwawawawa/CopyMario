@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="magic_enum">
+      <UniqueIdentifier>{4e0d72cf-be31-41f9-9783-7453911a674f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="00pch.h">
@@ -23,6 +26,33 @@
     </ClInclude>
     <ClInclude Include="20GameTimer.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum\magic_enum.hpp">
+      <Filter>magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum\magic_enum_all.hpp">
+      <Filter>magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum\magic_enum_containers.hpp">
+      <Filter>magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum\magic_enum_flags.hpp">
+      <Filter>magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum\magic_enum_format.hpp">
+      <Filter>magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum\magic_enum_fuse.hpp">
+      <Filter>magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum\magic_enum_iostream.hpp">
+      <Filter>magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum\magic_enum_switch.hpp">
+      <Filter>magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum\magic_enum_utility.hpp">
+      <Filter>magic_enum</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

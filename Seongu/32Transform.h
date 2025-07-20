@@ -1,5 +1,6 @@
 // 32Transform.h
 #pragma once
+#include "00pch.h"
 #include "31Component.h"
 
 class Transform : public Component

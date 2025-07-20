@@ -40,10 +40,10 @@ void SceneIntro::Initialize()
     mario->GetTransform()->SetScale(32, 48);  // 마리오 크기
 
     // Physics 컴포넌트 추가
-    //PhysicsComponent* physics = mario->AddComponent<PhysicsComponent>();
-    //physics->SetGravity(800.0f);
-    //physics->SetJumpPower(350.0f);
-    //physics->SetMaxFallSpeed(500.0f);
+    PhysicsComponent* physics = mario->AddComponent<PhysicsComponent>();
+    physics->SetGravity(800.0f);
+    physics->SetJumpPower(350.0f);
+    physics->SetMaxFallSpeed(500.0f);
 
     // Collider 컴포넌트 추가
     ColliderComponent* collider = mario->AddComponent<ColliderComponent>();
@@ -51,13 +51,13 @@ void SceneIntro::Initialize()
     collider->SetLayer(CollisionLayer::Player);
     collider->SetCollisionMask({ CollisionLayer::Ground, CollisionLayer::Wall, CollisionLayer::Platform });
 
-    ////Input 컴포넌트에서 점프 추가
-    //InputComponent* input = mario->AddComponent<InputComponent>();
-    //input->SetOnJump([physics]() {
-    //    physics->Jump();  // 점프 시도
-    //    });
-
-    //input->SetupWithMovement(400.0f);
+    //Input 컴포넌트에서 점프 추가
+    InputComponent* input = mario->AddComponent<InputComponent>();
+    input->SetOnJump([physics]() {
+        physics->Jump();  // 점프 시도
+        });
+    
+    input->SetupWithMovement(400.0f);
 
     //Renderer 컴포넌트 추가
     Renderer* renderer_mario = mario->AddComponent<Renderer>();
@@ -79,8 +79,7 @@ void SceneIntro::Initialize()
     //Renderer 컴포넌트 추가
     Renderer* renderer_ground = ground->AddComponent<Renderer>();
     renderer_ground->SetSize(800, 50);
-    renderer_ground->SetColor(255, 255, 0); // 빨간색
-
+    renderer_ground->SetColor(D2D1::ColorF::Brown);
 
     //////////////////////////////////////
     // 이렇게 해서 디버깅용으로 관리하면 될 듯
@@ -95,11 +94,14 @@ void SceneIntro::Update(float dTime)
     static float tempTime = 0;
     tempTime += dTime;
 
+    
+
     if(tempTime > 3.0f)
     {
-        printf("Physics Component: %s\n", debugPhysics ? "OK" : "MISSING");
-        printf("Input Component: %s\n", debugInput ? "OK" : "MISSING");
-        printf("Collider Component: %s\n", debugCollider ? "OK" : "MISSING");
+        std::cout << debugInput->IsLeftPressed() << std::endl;
+        //printf("Physics Component: %s\n", debugPhysics ? "OK" : "MISSING");
+        //printf("Input Component: %s\n", debugInput ? "OK" : "MISSING");
+        //printf("Collider Component: %s\n", debugCollider ? "OK" : "MISSING");
         tempTime = 0;
     }
     

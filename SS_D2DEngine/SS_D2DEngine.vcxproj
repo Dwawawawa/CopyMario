@@ -134,6 +134,15 @@
     </ClInclude>
     <ClInclude Include="10EngineD2D.h" />
     <ClInclude Include="20GameTimer.h" />
+    <ClInclude Include="magic_enum\magic_enum.hpp" />
+    <ClInclude Include="magic_enum\magic_enum_all.hpp" />
+    <ClInclude Include="magic_enum\magic_enum_containers.hpp" />
+    <ClInclude Include="magic_enum\magic_enum_flags.hpp" />
+    <ClInclude Include="magic_enum\magic_enum_format.hpp" />
+    <ClInclude Include="magic_enum\magic_enum_fuse.hpp" />
+    <ClInclude Include="magic_enum\magic_enum_iostream.hpp" />
+    <ClInclude Include="magic_enum\magic_enum_switch.hpp" />
+    <ClInclude Include="magic_enum\magic_enum_utility.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="00pch.cpp">

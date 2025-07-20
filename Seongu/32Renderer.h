@@ -16,6 +16,13 @@ public:
 
     void SetSize(float width, float height) { m_width = width; m_height = height; }
     void SetColor(int r, int g, int b) { m_color = { r, g, b }; }
+    void SetColor(const D2D1::ColorF& d2dColor) {
+        m_color = {
+            static_cast<int>(d2dColor.r * 255.0f),
+            static_cast<int>(d2dColor.g * 255.0f),
+            static_cast<int>(d2dColor.b * 255.0f)
+        };
+    }
 
     float GetWidth() const { return m_width; }
     float GetHeight() const { return m_height; }
