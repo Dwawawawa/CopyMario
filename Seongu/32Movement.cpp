@@ -35,6 +35,15 @@ void Movement::Update(float deltaTime)
 
 }
 
+void Movement::Release()
+{
+    // 1. Transform 포인터 무효화 (소유권이 없으므로 delete 안함)
+    m_transform = nullptr;
+
+    // 5. 부모 클래스의 Release 호출
+    Component::Release();
+}
+
 void Movement::UpdateLinearMovement(float deltaTime)
 {
     Transform::Vector2 movement = m_velocity * (m_speed * deltaTime);

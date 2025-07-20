@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -145,6 +145,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="32ColliderComponent.cpp" />
+    <ClCompile Include="32PhysicsComponent.cpp" />
+    <ClCompile Include="32PhysicsComponent.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="32InputComponent.cpp" />
     <ClCompile Include="32Movement.cpp" />
     <ClCompile Include="32Renderer.cpp" />
     <ClCompile Include="32Transform.cpp">
@@ -173,6 +180,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="30GameObject.h" />
+    <ClInclude Include="32ColliderComponent.h" />
+    <ClInclude Include="32InputComponent.h" />
     <ClInclude Include="32Movement.h" />
     <ClInclude Include="32Renderer.h" />
     <ClInclude Include="32Transform.h" />

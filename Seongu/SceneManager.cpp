@@ -84,6 +84,14 @@ void SceneManager::Update(float deltaTime)
     }
 }
 
+void SceneManager::UpdateInput()
+{
+    if (m_CurrentScene)
+    {
+        m_CurrentScene->UpdateInput();
+    }
+}
+
 void SceneManager::Render(std::shared_ptr<SSEngine> Renderer)
 {
     if (!Renderer) return;

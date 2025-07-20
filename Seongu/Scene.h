@@ -10,10 +10,11 @@ class Scene
 {
 public:
 	Scene() = default;
-	virtual ~Scene() = default;
+	virtual ~Scene();
 
     virtual void Initialize();
     virtual void Update(float deltaTime);
+    virtual void UpdateInput();
     virtual void Render(std::shared_ptr<SSEngine> renderer);
     virtual void Release();
 

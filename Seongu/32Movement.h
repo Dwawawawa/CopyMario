@@ -22,6 +22,7 @@ public:
 
     void Initialize() override;
     void Update(float deltaTime) override;
+    void Release() override;
 
 
     // 기본 설정
@@ -80,7 +81,7 @@ private:
     float m_circularRadius = 100.0f;
     Transform::Vector2 m_circularCenter;
 
-    // 앞뒤 이동용
+    // 참: 앞뒤 이동용(좌우) / 거짓 : 상하 이동
     bool m_backAndForthHorizontal = true;
     float m_backAndForthDistance = 200.0f;
     Transform::Vector2 m_startPosition;

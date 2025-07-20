@@ -2,6 +2,13 @@
 #include "00pch.h"
 #include "Scene.h"
 #include "30GameObject.h"
+#include "32Renderer.h"
+#include "algorithm"
+
+Scene::~Scene()
+{
+    std::cout << "[DEBUG] Scene destroyed, gameObjects.size(): " << m_gameObjects.size() << "\n";
+}
 
 void Scene::Initialize()
 {
@@ -25,14 +32,43 @@ void Scene::Update(float deltaTime)
     ProcessPendingDestroy();
 }
 
+void Scene::UpdateInput()
+{
+
+}
+
+
+
+
 void Scene::Render(std::shared_ptr<SSEngine> renderer)
 {
+    // 1. 모든 Renderer 수집
+    std::vector<std::pair<Renderer*, GameObject*>> renderData;
+
     for (auto& gameObject : m_gameObjects)
     {
         if (gameObject->IsActive())
         {
-            gameObject->Render(renderer);
+            auto rendererComp = gameObject->GetComponent<Renderer>();
+            if (rendererComp && rendererComp->IsActive())
+            {
+                renderData.push_back({ rendererComp, gameObject.get() });
+            }
         }
+    }
+
+    // 2. 레이어별 정렬
+    std::sort(renderData.begin(), renderData.end(),
+        [](const auto& a, const auto& b) {
+            return a.first->GetLayer() < b.first->GetLayer();
+        });
+
+    // 3. 정렬된 순서로 렌더링
+    for (auto& rd : renderData)
+    {
+        // 씬 -> 오브제 ->랜더러        (x)
+        // 씬 -> 랜더러                (o)
+        rd.first->Render(renderer);
     }
 }
 

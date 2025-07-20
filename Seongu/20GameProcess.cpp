@@ -167,7 +167,7 @@ void GameProcess::UpdateTime()
 
 void GameProcess::UpdateInput()
 {
-
+    SceneManager::GetInstance()->UpdateInput();
 }
 
 void GameProcess::UpdateLogic()

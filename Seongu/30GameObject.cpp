@@ -11,6 +11,7 @@ GameObject::GameObject()
 GameObject::~GameObject()
 {
 	Release();
+    std::cout << "[DEBUG] GameObject destroyed\n";
 }
 
 void GameObject::Initialize()
@@ -38,6 +39,7 @@ void GameObject::Render(std::shared_ptr<SSEngine> renderer)
 {
     if (!m_isActive) return;
 
+    // 왜 리버스를 하라는 거임?
     for (auto& component : m_components)
     {
         if (component->IsActive())

@@ -47,6 +47,7 @@ public:
 
     // 업데이트 및 렌더링
     void Update(float deltaTime);
+    void UpdateInput();
     void Render(std::shared_ptr<SSEngine> Renderer);
 
     // 씬 관리
