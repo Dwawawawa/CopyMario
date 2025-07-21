@@ -130,8 +130,8 @@ Transform::Vector2 ColliderComponent::GetMin() const
     auto scale = m_transform->GetScale();
 
     return Transform::Vector2(
-        pos.x + m_offset.x - (m_width * scale.x * 0.5f),
-        pos.y + m_offset.y - (m_height * scale.y * 0.5f)
+        pos.x + m_offset.x ,//-(m_width * scale.x * 0.5f),
+        pos.y + m_offset.y //- (m_height * scale.y * 0.5f)
     );
 }
 
@@ -142,8 +142,8 @@ Transform::Vector2 ColliderComponent::GetMax() const
     auto scale = m_transform->GetScale();
 
     return Transform::Vector2(
-        pos.x + m_offset.x + (m_width * scale.x * 0.5f),
-        pos.y + m_offset.y + (m_height * scale.y * 0.5f)
+        pos.x + m_offset.x + (m_width * scale.x ),//* 0.5f),
+        pos.y + m_offset.y + (m_height * scale.y )//* 0.5f)
     );
 }
 
@@ -168,8 +168,22 @@ void ColliderComponent::CheckCollisions()
         if (IsColliding(other))
         {
             newCollisions.push_back(other);
-
             CollisionInfo info = GetCollisionInfo(other);
+
+
+            //if (other->GetLayer() == CollisionLayer::Ground)
+            //{
+            //    auto otherPos = other->GetOwner()->GetTransform()->GetPosition();
+            //    auto otherMin = other->GetMin();
+            //    auto otherMax = other->GetMax();
+
+            //    std::cout << "=== Ground 충돌 상세 ===" << std::endl;
+            //    std::cout << "Ground Transform Position: (" << otherPos.x << ", " << otherPos.y << ")" << std::endl;
+            //    std::cout << "Ground Collider Min: (" << otherMin.x << ", " << otherMin.y << ")" << std::endl;
+            //    std::cout << "Ground Collider Max: (" << otherMax.x << ", " << otherMax.y << ")" << std::endl;
+            //    std::cout << "Ground Width/Height: " << other->GetWidth() << "/" << other->GetHeight() << std::endl;
+            //}
+
 
             // 땅 체크 (아래쪽에서 충돌하고 Ground나 Platform 레이어인 경우)
             if ((other->GetLayer() == CollisionLayer::Ground ||
@@ -186,11 +200,7 @@ void ColliderComponent::CheckCollisions()
                     // 아래로 떨어지고 있었다면 속도 제거
                     if (physics->GetVelocity().y > 0)
                     {
-
-
-                        std::cout << physics->GetVelocity().y << std::endl;
-
-
+                        std::cout << "y 속도 제거합니다" << std::endl;
                         //physics->SetVelocity(Vector2(0,0));
                         auto currentVel = physics->GetVelocity();
                         physics->SetVelocity(currentVel.x, 0); 

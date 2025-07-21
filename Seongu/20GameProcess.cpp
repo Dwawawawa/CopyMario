@@ -197,6 +197,13 @@ void GameProcess::Render()
 
     m_Renderer->RenderBegin();
 
+    for(int i = 0; i < 10; i++)
+    {
+        m_Renderer->DrawLine(0, i * 100, 1000, i * 100, D2D1::ColorF::Gray);
+        m_Renderer->DrawLine( i * 100 , 0,   i * 100, 1000, D2D1::ColorF::Gray);
+    }
+    
+
     m_Renderer->DrawCircle(500, 500, 102, D2D1::ColorF::HotPink);
     
     SceneManager::GetInstance()->Render(m_Renderer);

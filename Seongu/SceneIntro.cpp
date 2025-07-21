@@ -16,6 +16,8 @@ void SceneIntro::Initialize()
 
     /////////////////////////////
     /////////////////////////////
+    /////////////////////////////
+    /////////////////////////////
     // 마리오 오브젝트 추가
     GameObject* mario = CreateGameObject();
     mario->GetTransform()->SetPosition(100, 300);
@@ -31,7 +33,7 @@ void SceneIntro::Initialize()
     /////////////////////////////
     // Collider 컴포넌트 추가
     ColliderComponent* collider = mario->AddComponent<ColliderComponent>();
-    collider->SetSize(28, 44);  // 마리오보다 살짝 작게
+    collider->SetSize(1, 1);  // 마리오보다 살짝 작게
     collider->SetLayer(CollisionLayer::Player);
     collider->SetCollisionMask({ CollisionLayer::Ground, CollisionLayer::Wall, CollisionLayer::Platform });
 
@@ -87,46 +89,83 @@ void SceneIntro::Initialize()
     renderer_mario->SetSize(32, 48);
     renderer_mario->SetColor(255, 0, 0); // 빨간색
 
+
+
+    /////////////////////////////
+    /////////////////////////////
     /////////////////////////////
     /////////////////////////////
     // 땅 오브젝트 생성
     
-    //GameObject* ground = CreateGameObject();
-    //ground->GetTransform()->SetPosition(50, 1000);
-    //ground->GetTransform()->SetScale(800, 50);
+    GameObject* ground = CreateGameObject();
+    ground->GetTransform()->SetPosition(50, 600);
+    ground->GetTransform()->SetScale(800, 50);
 
-    //ColliderComponent* groundCollider = ground->AddComponent<ColliderComponent>();
-    //groundCollider->SetSize(800, 50);
-    //groundCollider->SetLayer(CollisionLayer::Ground);
-    //groundCollider->SetCollisionMask({});  // 땅은 다른 것과 충돌 체크 안함
+    ColliderComponent* groundCollider = ground->AddComponent<ColliderComponent>();
+    groundCollider->SetSize(1, 1);
+    groundCollider->SetLayer(CollisionLayer::Ground);
+    groundCollider->SetCollisionMask({});  // 땅은 다른 것과 충돌 체크 안함
 
-    ////Renderer 컴포넌트 추가
-    //Renderer* renderer_ground = ground->AddComponent<Renderer>();
-    //renderer_ground->SetSize(800, 50);
-    //renderer_ground->SetColor(D2D1::ColorF::Brown);
+    //Renderer 컴포넌트 추가
+    Renderer* renderer_ground = ground->AddComponent<Renderer>();
+    renderer_ground->SetSize(800, 50);
+    renderer_ground->SetColor(D2D1::ColorF::Brown);
 
 }
 
 void SceneIntro::Update(float dTime)
 {
+    // 디버그
     static float tempTime = 0;
     tempTime += dTime;
     if(tempTime > 0.5f)
     {
-        std::cout << m_gameObjects[0]->GetTransform()->GetPosition().x <<
+        std::cout <<
+            "========================="
+            << std::endl;
+
+        std::cout << "마리오의 위치 : " <<
+            m_gameObjects[0]->GetTransform()->GetPosition().x <<
             " " << m_gameObjects[0]->GetTransform()->GetPosition().y << std::endl;
         //std::cout << GetAllKeyStatesAsString() << std::endl;
+        std::cout << "마리오의 속도 : " <<
+            m_gameObjects[0]->GetComponent<PhysicsComponent>()->GetVelocity().x <<
+            " " << m_gameObjects[0]->GetComponent<PhysicsComponent>()->GetVelocity().y << std::endl;
+
+
+        auto otherPos1 = m_gameObjects[0]->GetTransform()->GetPosition();
+        auto otherMin1 = m_gameObjects[0]->GetComponent<ColliderComponent>()->GetMin();
+        auto otherMax1 = m_gameObjects[0]->GetComponent<ColliderComponent>()->GetMax();
+
+        std::cout << "=== 마리오의 충돌 상세 ===" << std::endl;
+        std::cout << "마리오의 Transform Position: (" << otherPos1.x << ", " << otherPos1.y << ")" << std::endl;
+        std::cout << "마리오의 Collider Min: (" << otherMin1.x << ", " << otherMin1.y << ")" << std::endl;
+        std::cout << "마리오의 Collider Max: (" << otherMax1.x << ", " << otherMax1.y << ")" << std::endl;
+
+
+        std::cout <<
+            "========================="
+            << std::endl;
+
+        std::cout << "땅의 위치 : " <<
+            m_gameObjects[1]->GetTransform()->GetPosition().x <<
+            " " << m_gameObjects[1]->GetTransform()->GetPosition().y << std::endl;
+
+        auto otherPos = m_gameObjects[1]->GetTransform()->GetPosition();
+        auto otherMin = m_gameObjects[1]->GetComponent<ColliderComponent>()->GetMin();
+        auto otherMax = m_gameObjects[1]->GetComponent<ColliderComponent>()->GetMax();
+
+        std::cout << "=== Ground 충돌 상세 ===" << std::endl;
+        std::cout << "Ground Transform Position: (" << otherPos.x << ", " << otherPos.y << ")" << std::endl;
+        std::cout << "Ground Collider Min: (" << otherMin.x << ", " << otherMin.y << ")" << std::endl;
+        std::cout << "Ground Collider Max: (" << otherMax.x << ", " << otherMax.y << ")" << std::endl;
+        //std::cout << "Ground Width/Height: " << other->GetWidth() << "/" << other->GetHeight() << std::endl;
 
         tempTime = 0;
     }
     
     Scene::Update(dTime);
 }
-
-//void SceneIntro::Render(std::shared_ptr<SSEngine> Renderer)
-//{
-//	m_pObjectManager->Render(Renderer);
-//}
 
 
 
