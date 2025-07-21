@@ -5,6 +5,11 @@
 
 InputComponent::InputComponent()
 {
+    for (auto key : magic_enum::enum_values<InputKey>())
+    {
+        m_keyStates[key] = KeyState::None;
+        m_prevKeyStates[key] = false;
+    }
 }
 
 void InputComponent::Initialize()
@@ -12,174 +17,201 @@ void InputComponent::Initialize()
     Component::Initialize();
     // Movement 컴포넌트 찾기 (있다면)
     m_movement = GetOwner()->GetComponent<Movement>();
+
+
+    RegisterKeyCallback(InputKey::Left, KeyState::Hold, [this](InputKey){
+        if (m_movement) m_movement->SetVelocity(-m_moveSpeed,0);
+        });
+
+    RegisterKeyCallback(InputKey::Right, KeyState::Hold, [this](InputKey) {
+        if (m_movement) m_movement->SetVelocity(m_moveSpeed, 0);
+        });
+
+    RegisterKeyCallback(InputKey::Left, KeyState::Released, [this](InputKey) {
+        if (m_movement && !IsKeyHold(InputKey::Right)) 
+            m_movement->SetVelocity(0);
+        });
+
+    RegisterKeyCallback(InputKey::Right, KeyState::Released, [this](InputKey) {
+        if (m_movement && !IsKeyHold(InputKey::Left))
+            m_movement->SetVelocity(0);
+        });
+
 }
 
 void InputComponent::Update(float deltaTime)
 {
-    if (!IsActive()) return;
-    Component::Update(deltaTime);
+    UpdateKeyStates();
+    ProcessCallbacks();
 
-    UpdateKeyState();
+    ////debug
+    //static float tempTime = 0;
+    //tempTime += deltaTime;
+    //if (tempTime > 0.5f)
+    //{
+    //    //std::cout << debugInput->GetAllKeyStatesAsString()<< std::endl;
+    //    std::cout << GetAllKeyStatesAsString() << std::endl;
 
-    // 좌우 키 처리
-    if (m_leftState == KeyState::Hold && m_onLeftCallback)
-    {
-        m_onLeftCallback();
-    }
-    if (m_rightState == KeyState::Hold && m_onRightCallback)
-    {
-        m_onRightCallback();
-    }
-    if (m_leftState == KeyState::Released && m_onLeftReleasedCallback)
-    {
-        m_onLeftReleasedCallback();
-    }
-    if (m_rightState == KeyState::Released && m_onRightReleasedCallback)
-    {
-        m_onRightReleasedCallback();
-    }
-
-    // 점프 키 처리 (Pressed일 때만 점프 - 연속 점프 방지)
-    if (m_jumpState == KeyState::Pressed && m_onJumpCallback)
-    {
-        m_onJumpCallback();
-    }
-    if (m_jumpState == KeyState::Released && m_onJumpReleasedCallback)
-    {
-        m_onJumpReleasedCallback();
-    }
+    //    tempTime = 0;
+    //}
 }
 
 void InputComponent::Release()
 {
-    m_onLeftCallback = nullptr;
-    m_onRightCallback = nullptr;
-    m_onLeftReleasedCallback = nullptr;
-    m_onRightReleasedCallback = nullptr;
-    m_onJumpCallback = nullptr;
-    m_onJumpReleasedCallback = nullptr;
-    Component::Release();
+    Component::Initialize();
 }
 
-void InputComponent::UpdateKeyState()
+KeyState InputComponent::GetKeyState(InputKey key) const
 {
-    bool leftDown = IsKeyDown(VK_LEFT);
-    bool rightDown = IsKeyDown(VK_RIGHT);
-    bool jumpDown = IsKeyDown(VK_SPACE);  // 스페이스바를 점프 키로 사용
-
-    // 왼쪽 키 상태 업데이트
-    if (leftDown && !m_prevLeftKey)
-        m_leftState = KeyState::Pressed;
-    else if (leftDown && m_prevLeftKey)
-        m_leftState = KeyState::Hold;
-    else if (!leftDown && m_prevLeftKey)
-        m_leftState = KeyState::Released;
-    else
-        m_leftState = KeyState::None;
-
-    // 오른쪽 키 상태 업데이트
-    if (rightDown && !m_prevRightKey)
-        m_rightState = KeyState::Pressed;
-    else if (rightDown && m_prevRightKey)
-        m_rightState = KeyState::Hold;
-    else if (!rightDown && m_prevRightKey)
-        m_rightState = KeyState::Released;
-    else
-        m_rightState = KeyState::None;
-
-    // 점프 키 상태 업데이트
-    if (jumpDown && !m_prevJumpKey)
-        m_jumpState = KeyState::Pressed;
-    else if (jumpDown && m_prevJumpKey)
-        m_jumpState = KeyState::Hold;
-    else if (!jumpDown && m_prevJumpKey)
-        m_jumpState = KeyState::Released;
-    else
-        m_jumpState = KeyState::None;
-
-    m_prevLeftKey = leftDown;
-    m_prevRightKey = rightDown;
-    m_prevJumpKey = jumpDown;
+    auto it = m_keyStates.find(key);
+    return it != m_keyStates.end() ? it->second : KeyState::None;
 }
 
-bool InputComponent::IsKeyDown(int virtualKey) const
+KeyState InputComponent::GetKeyState(std::string_view keyName) const
 {
-    return (GetAsyncKeyState(virtualKey) & 0x8000) != 0;
+    auto key = ParseInputKey(keyName);
+    return key ? GetKeyState(*key) : KeyState::None;
+}
+
+bool InputComponent::IsKeyPressed(std::string_view keyName) const
+{
+    return GetKeyState(keyName) == KeyState::Pressed;
+}
+
+bool InputComponent::AreKeysPressed(std::string_view keyFlags) const
+{
+    // "Left|Right|Jump" 형태의 문자열을 파싱
+    auto parsedKeys = magic_enum::enum_flags_cast<InputKey>(keyFlags);
+    if (!parsedKeys) return false;
+
+    // 각 키가 모두 눌렸는지 확인
+    for (auto key : magic_enum::enum_values<InputKey>()) {
+        if (magic_enum::enum_flags_test(*parsedKeys, key)) {
+            if (!IsKeyPressed(key) && !IsKeyHold(key)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+InputKey InputComponent::GetPressedKeys() const
+{
+    InputKey result = static_cast<InputKey>(0);
+
+    for (const auto& [key, state] : m_keyStates) {
+        if (state == KeyState::Pressed || state == KeyState::Hold) {
+            result = static_cast<InputKey>(
+                static_cast<std::underlying_type_t<InputKey>>(result) |
+                static_cast<std::underlying_type_t<InputKey>>(key)
+                );
+        }
+    }
+    return result;
+}
+
+void InputComponent::RegisterKeyCallback(InputKey key, KeyState state, KeyCallback callback)
+{
+    m_callbacks.push_back({ key, state, callback });
+}
+
+void InputComponent::RegisterKeyCallback(std::string_view keyName, std::string_view stateName, KeyCallback callback)
+{
+    auto key = ParseInputKey(keyName);
+    auto state = ParseKeyState(stateName);
+
+    if (key && state) {
+        RegisterKeyCallback(*key, *state, callback);
+    }
 }
 
 void InputComponent::SetupWithMovement(float moveSpeed)
 {
     m_moveSpeed = moveSpeed;
-
-    // Movement 컴포넌트와 자동 연동
-    SetOnMoveLeft([this]() {
-        if (m_movement) {
-            m_movement->SetVelocity(-1, 0);  // 왼쪽으로 이동
-        }
-        });
-
-    SetOnMoveRight([this]() {
-        if (m_movement) {
-            m_movement->SetVelocity(1, 0);   // 오른쪽으로 이동
-        }
-        });
-
-    // 키를 뗐을 때 정지
-    SetOnLeftReleased([this]() {
-        if (m_movement && !IsRightHold()) {
-            m_movement->SetVelocity(0, 0);   // 정지
-        }
-        });
-
-    SetOnRightReleased([this]() {
-        if (m_movement && !IsLeftHold()) {
-            m_movement->SetVelocity(0, 0);   // 정지
-        }
-        });
 }
 
-/*
-사용 예제 (점프 기능 포함):
+std::string InputComponent::GetAllKeyStatesAsString() const
+{
+    std::string result = "Key States: ";
 
-// GameObject에 InputComponent 추가
-auto inputComp = gameObject->AddComponent<InputComponent>();
-
-// 람다로 입력 처리 등록
-inputComp->SetOnMoveLeft([this]() {
-    // 마리오 왼쪽 이동 로직
-    if (physicsComponent) {
-        physicsComponent->AddVelocity(-moveSpeed, 0);
+    for (const auto& [key, state] : m_keyStates) {
+        if (state != KeyState::None) {
+            result += std::string(magic_enum::enum_name(key)) + "=" +
+                std::string(magic_enum::enum_name(state)) + " ";
+        }
     }
-    SetDirection(-1);
-});
 
-inputComp->SetOnMoveRight([this]() {
-    // 마리오 오른쪽 이동 로직
-    if (physicsComponent) {
-        physicsComponent->AddVelocity(moveSpeed, 0);
-    }
-    SetDirection(1);
-});
-
-// 점프 처리
-inputComp->SetOnJump([this]() {
-    if (physicsComponent) {
-        physicsComponent->Jump();  // PhysicsComponent의 Jump() 호출
-    }
-});
-
-// 점프 키를 뗐을 때의 처리 (짧은 점프 구현 등)
-inputComp->SetOnJumpReleased([this]() {
-    if (physicsComponent && physicsComponent->GetVelocity().y < 0) {
-        // 점프 키를 빨리 떼면 점프 높이를 줄임
-        auto vel = physicsComponent->GetVelocity();
-        vel.y *= 0.5f;  // 점프 속도 반감
-        physicsComponent->SetVelocity(vel);
-    }
-});
-
-// 직접 상태 체크도 가능
-if (inputComp->IsJumpPressed()) {
-    // 점프 키가 눌렸을 때의 처리
+    return result;
 }
-*/
+
+void InputComponent::UpdateKeyStates()
+{
+    for (auto key : magic_enum::enum_values<InputKey>()) {
+        bool currentDown = IsVirtualKeyDown(key);
+        bool prevDown = m_prevKeyStates[key];
+
+        if (currentDown && !prevDown) {
+            m_keyStates[key] = KeyState::Pressed;
+        }
+        else if (currentDown && prevDown) {
+            m_keyStates[key] = KeyState::Hold;
+        }
+        else if (!currentDown && prevDown) {
+            m_keyStates[key] = KeyState::Released;
+        }
+        else {
+            m_keyStates[key] = KeyState::None;
+        }
+
+        m_prevKeyStates[key] = currentDown;
+    }
+}
+
+void InputComponent::ProcessCallbacks()
+{
+    for (const auto& callbackInfo : m_callbacks) {
+        
+        if (GetKeyState(callbackInfo.key) == callbackInfo.triggerState) {
+            callbackInfo.callback(callbackInfo.key);
+        }
+    }
+
+    // 상태 변화 콜백 호출
+    if (m_onStateChanged) {
+        
+        for (const auto& [key, state] : m_keyStates) {
+            if (state != KeyState::None) {
+                m_onStateChanged(key, state);
+            }
+        }
+    }
+}
+
+std::optional<InputKey> InputComponent::ParseInputKey(std::string_view keyName) const
+{
+    return magic_enum::enum_cast<InputKey>(keyName);
+}
+
+std::optional<KeyState> InputComponent::ParseKeyState(std::string_view stateName) const
+{
+    return magic_enum::enum_cast<KeyState>(stateName);
+}
+
+int InputComponent::GetVirtualKeyCode(InputKey key) const
+{
+    // 실제 가상 키 코드 매핑
+    switch (key) {
+    case InputKey::Left: return VK_LEFT;
+    case InputKey::Right: return VK_RIGHT;
+    case InputKey::Jump: return VK_SPACE;
+    case InputKey::Action: return 'Z';
+    case InputKey::Menu: return VK_ESCAPE;
+    case InputKey::Pause: return 'P';
+    default: return 0;
+    }
+}
+
+bool InputComponent::IsVirtualKeyDown(InputKey key) const
+{
+    return GetAsyncKeyState(GetVirtualKeyCode(key)) & 0x8000;
+}

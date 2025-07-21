@@ -174,7 +174,7 @@ void GameProcess::UpdateLogic()
 {
     tempTime += m_deltaTime;  // 이 라인이 있는지 확인
 
-    if (tempTime > 3.f) {
+    if (tempTime > 30.f) {
         
         tempint++;
 

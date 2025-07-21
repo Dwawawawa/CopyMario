@@ -1,4 +1,4 @@
-// SceneIntro.cpp 
+ï»¿// SceneIntro.cpp 
 #include "00pch.h"
 #include "SceneIntro.h"
 #include "30GameObject.h"
@@ -14,78 +14,96 @@ void SceneIntro::Initialize()
 {
     Scene::Initialize();
 
-    // ÆÐÆ®·ÑÇÏ´Â °ÔÀÓ¿ÀºêÁ§Æ® »ý¼º ¿¹½Ã
-    //GameObject* patrolObject = CreateGameObject();
-    //patrolObject->GetTransform()->SetPosition(300, 500);
-    //patrolObject->GetTransform()->SetScale(300, 300);
-
-    //// Movement ÄÄÆ÷³ÍÆ® Ãß°¡
-    //Movement* movement = patrolObject->AddComponent<Movement>();
-    //movement->SetSpeed(400.0f);
-    ////movement->SetBounds(200, -100, 1000, 1000);
-    //movement->SetMovementType(Movement::MovementType::Linear);  // ¶Ç´Â ´Ù¸¥ Å¸ÀÔ
-    //movement->SetVelocity(1, 0);
-
-    ////Renderer ÄÄÆ÷³ÍÆ® Ãß°¡
-    //Renderer* renderer = patrolObject->AddComponent<Renderer>();
-    //renderer->SetSize(100, 100);
-    //renderer->SetColor(255, 255, 0); // »¡°£»ö
-
-    ////InputComponent ÄÄÆ÷³ÍÆ® Ãß°¡
-    //InputComponent* inputComp = patrolObject->AddComponent<InputComponent>();
-    //inputComp->SetupWithMovement(400.0f);
-
+    /////////////////////////////
+    /////////////////////////////
+    // ë§ˆë¦¬ì˜¤ ì˜¤ë¸Œì íŠ¸ ì¶”ê°€
     GameObject* mario = CreateGameObject();
     mario->GetTransform()->SetPosition(100, 300);
-    mario->GetTransform()->SetScale(32, 48);  // ¸¶¸®¿À Å©±â
+    mario->GetTransform()->SetScale(32, 48);  // ë§ˆë¦¬ì˜¤ í¬ê¸°
 
-    // Physics ÄÄÆ÷³ÍÆ® Ãß°¡
+    /////////////////////////////
+    // Physics ì»´í¬ë„ŒíŠ¸ ì¶”ê°€
     PhysicsComponent* physics = mario->AddComponent<PhysicsComponent>();
     physics->SetGravity(800.0f);
     physics->SetJumpPower(350.0f);
     physics->SetMaxFallSpeed(500.0f);
 
-    // Collider ÄÄÆ÷³ÍÆ® Ãß°¡
+    /////////////////////////////
+    // Collider ì»´í¬ë„ŒíŠ¸ ì¶”ê°€
     ColliderComponent* collider = mario->AddComponent<ColliderComponent>();
-    collider->SetSize(28, 44);  // ¸¶¸®¿Àº¸´Ù »ìÂ¦ ÀÛ°Ô
+    collider->SetSize(28, 44);  // ë§ˆë¦¬ì˜¤ë³´ë‹¤ ì‚´ì§ ìž‘ê²Œ
     collider->SetLayer(CollisionLayer::Player);
     collider->SetCollisionMask({ CollisionLayer::Ground, CollisionLayer::Wall, CollisionLayer::Platform });
 
-    //Input ÄÄÆ÷³ÍÆ®¿¡¼­ Á¡ÇÁ Ãß°¡
+    /////////////////////////////
+    //Input ì»´í¬ë„ŒíŠ¸ì—ì„œ ì í”„ ì¶”ê°€
     InputComponent* input = mario->AddComponent<InputComponent>();
-    input->SetOnJump([physics]() {
-        physics->Jump();  // Á¡ÇÁ ½Ãµµ
-        });
     
-    input->SetupWithMovement(400.0f);
+     //1. ì í”„ ì½œë°± ë“±ë¡
+    input->RegisterKeyCallback(InputKey::Jump, KeyState::Pressed, [physics](InputKey key) {
+        // PhysicsComponentì˜ Jump() í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.
+         if (physics) {
+            physics->Jump();
+        }
+        });
 
-    //Renderer ÄÄÆ÷³ÍÆ® Ãß°¡
+    // 2. ì¢Œìš° ì´ë™ ì½œë°±ì„ PhysicsComponentì— ë§žê²Œ ìƒˆë¡œ ë“±ë¡
+    float moveSpeed = 200.0f; // ì´ë™ ì†ë„ ì„¤ì •
+    input->RegisterKeyCallback(InputKey::Left, KeyState::Hold, [physics, moveSpeed](InputKey key) {
+        if (physics) {
+            auto currentVel = physics->GetVelocity();
+            physics->SetVelocity(-moveSpeed, currentVel.y);
+        }
+        });
+           
+    input->RegisterKeyCallback(InputKey::Right, KeyState::Hold, [physics, moveSpeed](InputKey key) {
+        if (physics) {
+            auto currentVel = physics->GetVelocity();
+            physics->SetVelocity(moveSpeed, currentVel.y);
+        }
+        });
+
+
+    //3. í‚¤ë¥¼ ë—ì„ ë•Œ ë©ˆì¶”ë„ë¡ ì½œë°± ë“±ë¡
+    input->RegisterKeyCallback(InputKey::Left, KeyState::Released, [physics, input](InputKey key) {
+        // ì˜¤ë¥¸ìª½ í‚¤ê°€ ëˆŒë ¤ìžˆì§€ ì•Šì„ ë•Œë§Œ ì†ë„ë¥¼ 0ìœ¼ë¡œ ë§Œë“­ë‹ˆë‹¤.
+        if (physics && !input->IsKeyHold(InputKey::Right)) {
+            auto currentVel = physics->GetVelocity();
+            physics->SetVelocity(0, currentVel.y);
+        }
+        });
+
+    input->RegisterKeyCallback(InputKey::Right, KeyState::Released, [physics, input](InputKey key) {
+        // ì™¼ìª½ í‚¤ê°€ ëˆŒë ¤ìžˆì§€ ì•Šì„ ë•Œë§Œ ì†ë„ë¥¼ 0ìœ¼ë¡œ ë§Œë“­ë‹ˆë‹¤.
+        if (physics && !input->IsKeyHold(InputKey::Left)) {
+            auto currentVel = physics->GetVelocity();
+            physics->SetVelocity(0, currentVel.y);
+        }
+        });
+
+    /////////////////////////////
+    //Renderer ì»´í¬ë„ŒíŠ¸ ì¶”ê°€
     Renderer* renderer_mario = mario->AddComponent<Renderer>();
     renderer_mario->SetSize(32, 48);
-    renderer_mario->SetColor(255, 0, 0); // »¡°£»ö
+    renderer_mario->SetColor(255, 0, 0); // ë¹¨ê°„ìƒ‰
 
+    /////////////////////////////
+    /////////////////////////////
+    // ë•… ì˜¤ë¸Œì íŠ¸ ìƒì„±
     
+    //GameObject* ground = CreateGameObject();
+    //ground->GetTransform()->SetPosition(50, 1000);
+    //ground->GetTransform()->SetScale(800, 50);
 
-    // ¶¥ ¿ÀºêÁ§Æ® »ý¼º
-    GameObject* ground = CreateGameObject();
-    ground->GetTransform()->SetPosition(50, 500);
-    ground->GetTransform()->SetScale(800, 50);
+    //ColliderComponent* groundCollider = ground->AddComponent<ColliderComponent>();
+    //groundCollider->SetSize(800, 50);
+    //groundCollider->SetLayer(CollisionLayer::Ground);
+    //groundCollider->SetCollisionMask({});  // ë•…ì€ ë‹¤ë¥¸ ê²ƒê³¼ ì¶©ëŒ ì²´í¬ ì•ˆí•¨
 
-    ColliderComponent* groundCollider = ground->AddComponent<ColliderComponent>();
-    groundCollider->SetSize(800, 50);
-    groundCollider->SetLayer(CollisionLayer::Ground);
-    groundCollider->SetCollisionMask({});  // ¶¥Àº ´Ù¸¥ °Í°ú Ãæµ¹ Ã¼Å© ¾ÈÇÔ
-
-    //Renderer ÄÄÆ÷³ÍÆ® Ãß°¡
-    Renderer* renderer_ground = ground->AddComponent<Renderer>();
-    renderer_ground->SetSize(800, 50);
-    renderer_ground->SetColor(D2D1::ColorF::Brown);
-
-    //////////////////////////////////////
-    // ÀÌ·¸°Ô ÇØ¼­ µð¹ö±ë¿ëÀ¸·Î °ü¸®ÇÏ¸é µÉ µí
-    debugPhysics = mario->GetComponent<PhysicsComponent>();
-    debugInput = mario->GetComponent<InputComponent>();
-    debugCollider = mario->GetComponent<ColliderComponent>();
+    ////Renderer ì»´í¬ë„ŒíŠ¸ ì¶”ê°€
+    //Renderer* renderer_ground = ground->AddComponent<Renderer>();
+    //renderer_ground->SetSize(800, 50);
+    //renderer_ground->SetColor(D2D1::ColorF::Brown);
 
 }
 
@@ -93,15 +111,12 @@ void SceneIntro::Update(float dTime)
 {
     static float tempTime = 0;
     tempTime += dTime;
-
-    
-
-    if(tempTime > 3.0f)
+    if(tempTime > 0.5f)
     {
-        std::cout << debugInput->IsLeftPressed() << std::endl;
-        //printf("Physics Component: %s\n", debugPhysics ? "OK" : "MISSING");
-        //printf("Input Component: %s\n", debugInput ? "OK" : "MISSING");
-        //printf("Collider Component: %s\n", debugCollider ? "OK" : "MISSING");
+        std::cout << m_gameObjects[0]->GetTransform()->GetPosition().x <<
+            " " << m_gameObjects[0]->GetTransform()->GetPosition().y << std::endl;
+        //std::cout << GetAllKeyStatesAsString() << std::endl;
+
         tempTime = 0;
     }
     

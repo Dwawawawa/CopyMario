@@ -50,8 +50,8 @@ private:
     Vector2 m_velocity;
 
     // 물리 속성
-    float m_gravity = 800.0f;
-    float m_jumpPower = 350.0f;
+    float m_gravity = 10.0f;
+    float m_jumpPower = 100.0f;
     float m_maxFallSpeed = 500.0f;
     float m_groundDrag = 0.8f;
     float m_airDrag = 0.2f;

@@ -35,22 +35,6 @@ void PhysicsComponent::Update(float deltaTime)
     currentPos.x += m_velocity.x * deltaTime;
     currentPos.y += m_velocity.y * deltaTime;
     m_transform->SetPosition(currentPos);
-
-    // 임시로 화면 바닥에서 착지 처리 (ColliderComponent가 구현되기 전까지)
-    if (currentPos.y >= 450.0f) // 바닥 위치 (가정)
-    {
-        currentPos.y = 450.0f;
-        m_transform->SetPosition(currentPos);
-        if (m_velocity.y > 0) // 떨어지고 있었다면
-        {
-            m_velocity.y = 0;
-            m_isGrounded = true;
-        }
-    }
-    else if (m_velocity.y != 0) // 공중에 있다면
-    {
-        m_isGrounded = false;
-    }
 }
 
 void PhysicsComponent::Release()

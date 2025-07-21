@@ -186,7 +186,14 @@ void ColliderComponent::CheckCollisions()
                     // 아래로 떨어지고 있었다면 속도 제거
                     if (physics->GetVelocity().y > 0)
                     {
-                        physics->SetVelocity(Vector2(0,0));
+
+
+                        std::cout << physics->GetVelocity().y << std::endl;
+
+
+                        //physics->SetVelocity(Vector2(0,0));
+                        auto currentVel = physics->GetVelocity();
+                        physics->SetVelocity(currentVel.x, 0); 
                     }
                 }
             }
@@ -258,39 +265,3 @@ void ColliderComponent::UpdateAllCollisions()
         }
     }
 }
-
-/*
-사용 예제: 마리오 캐릭터 설정
-
-GameObject* mario = CreateGameObject();
-mario->GetTransform()->SetPosition(100, 300);
-mario->GetTransform()->SetScale(32, 48);  // 마리오 크기
-
-// Physics 컴포넌트 추가
-PhysicsComponent* physics = mario->AddComponent<PhysicsComponent>();
-physics->SetGravity(800.0f);
-physics->SetJumpPower(350.0f);
-physics->SetMaxFallSpeed(500.0f);
-
-// Collider 컴포넌트 추가
-ColliderComponent* collider = mario->AddComponent<ColliderComponent>();
-collider->SetSize(28, 44);  // 마리오보다 살짝 작게
-collider->SetLayer(CollisionLayer::Player);
-collider->SetCollisionMask({CollisionLayer::Ground, CollisionLayer::Wall, CollisionLayer::Platform});
-
-// Input 컴포넌트에서 점프 추가
-InputComponent* input = mario->AddComponent<InputComponent>();
-input->SetOnJump([physics]() {
-    physics->Jump();  // 점프 시도
-});
-
-// 땅 오브젝트 생성
-GameObject* ground = CreateGameObject();
-ground->GetTransform()->SetPosition(400, 500);
-ground->GetTransform()->SetScale(800, 50);
-
-ColliderComponent* groundCollider = ground->AddComponent<ColliderComponent>();
-groundCollider->SetSize(800, 50);
-groundCollider->SetLayer(CollisionLayer::Ground);
-groundCollider->SetCollisionMask({});  // 땅은 다른 것과 충돌 체크 안함
-*/

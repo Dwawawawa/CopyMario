@@ -33,13 +33,18 @@ void GameObject::Update(float deltaTime)
             component->Update(deltaTime);
         }
     }
+
+    //if (m_transform)
+    //{
+    //    std::cout << m_transform->GetPosition().y << std::endl;;
+    //}
+
 }
 
 void GameObject::Render(std::shared_ptr<SSEngine> renderer)
 {
     if (!m_isActive) return;
 
-    // 왜 리버스를 하라는 거임?
     for (auto& component : m_components)
     {
         if (component->IsActive())
