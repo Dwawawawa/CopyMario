@@ -10,6 +10,11 @@
 
 #include "32InputComponent.h"
 
+SceneIntro::~SceneIntro()
+{
+
+}
+
 void SceneIntro::Initialize()
 {
     Scene::Initialize();
@@ -91,11 +96,11 @@ void SceneIntro::Initialize()
 
 
 
-    /////////////////////////////
-    /////////////////////////////
-    /////////////////////////////
-    /////////////////////////////
-    // 땅 오브젝트 생성
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    ///////////////////////////
+    //땅 오브젝트 생성
     
     GameObject* ground = CreateGameObject();
     ground->GetTransform()->SetPosition(50, 600);
@@ -120,48 +125,48 @@ void SceneIntro::Update(float dTime)
     tempTime += dTime;
     if(tempTime > 0.5f)
     {
-        std::cout <<
-            "========================="
-            << std::endl;
+        //std::cout <<
+        //    "========================="
+        //    << std::endl;
 
-        std::cout << "마리오의 위치 : " <<
-            m_gameObjects[0]->GetTransform()->GetPosition().x <<
-            " " << m_gameObjects[0]->GetTransform()->GetPosition().y << std::endl;
-        //std::cout << GetAllKeyStatesAsString() << std::endl;
-        std::cout << "마리오의 속도 : " <<
-            m_gameObjects[0]->GetComponent<PhysicsComponent>()->GetVelocity().x <<
-            " " << m_gameObjects[0]->GetComponent<PhysicsComponent>()->GetVelocity().y << std::endl;
-
-
-        auto otherPos1 = m_gameObjects[0]->GetTransform()->GetPosition();
-        auto otherMin1 = m_gameObjects[0]->GetComponent<ColliderComponent>()->GetMin();
-        auto otherMax1 = m_gameObjects[0]->GetComponent<ColliderComponent>()->GetMax();
-
-        std::cout << "=== 마리오의 충돌 상세 ===" << std::endl;
-        std::cout << "마리오의 Transform Position: (" << otherPos1.x << ", " << otherPos1.y << ")" << std::endl;
-        std::cout << "마리오의 Collider Min: (" << otherMin1.x << ", " << otherMin1.y << ")" << std::endl;
-        std::cout << "마리오의 Collider Max: (" << otherMax1.x << ", " << otherMax1.y << ")" << std::endl;
+        //std::cout << "마리오의 위치 : " <<
+        //    m_gameObjects[0]->GetTransform()->GetPosition().x <<
+        //    " " << m_gameObjects[0]->GetTransform()->GetPosition().y << std::endl;
+        ////std::cout << GetAllKeyStatesAsString() << std::endl;
+        //std::cout << "마리오의 속도 : " <<
+        //    m_gameObjects[0]->GetComponent<PhysicsComponent>()->GetVelocity().x <<
+        //    " " << m_gameObjects[0]->GetComponent<PhysicsComponent>()->GetVelocity().y << std::endl;
 
 
-        std::cout <<
-            "========================="
-            << std::endl;
+        //auto otherPos1 = m_gameObjects[0]->GetTransform()->GetPosition();
+        //auto otherMin1 = m_gameObjects[0]->GetComponent<ColliderComponent>()->GetMin();
+        //auto otherMax1 = m_gameObjects[0]->GetComponent<ColliderComponent>()->GetMax();
 
-        std::cout << "땅의 위치 : " <<
-            m_gameObjects[1]->GetTransform()->GetPosition().x <<
-            " " << m_gameObjects[1]->GetTransform()->GetPosition().y << std::endl;
+        //std::cout << "=== 마리오의 충돌 상세 ===" << std::endl;
+        //std::cout << "마리오의 Transform Position: (" << otherPos1.x << ", " << otherPos1.y << ")" << std::endl;
+        //std::cout << "마리오의 Collider Min: (" << otherMin1.x << ", " << otherMin1.y << ")" << std::endl;
+        //std::cout << "마리오의 Collider Max: (" << otherMax1.x << ", " << otherMax1.y << ")" << std::endl;
 
-        auto otherPos = m_gameObjects[1]->GetTransform()->GetPosition();
-        auto otherMin = m_gameObjects[1]->GetComponent<ColliderComponent>()->GetMin();
-        auto otherMax = m_gameObjects[1]->GetComponent<ColliderComponent>()->GetMax();
 
-        std::cout << "=== Ground 충돌 상세 ===" << std::endl;
-        std::cout << "Ground Transform Position: (" << otherPos.x << ", " << otherPos.y << ")" << std::endl;
-        std::cout << "Ground Collider Min: (" << otherMin.x << ", " << otherMin.y << ")" << std::endl;
-        std::cout << "Ground Collider Max: (" << otherMax.x << ", " << otherMax.y << ")" << std::endl;
-        //std::cout << "Ground Width/Height: " << other->GetWidth() << "/" << other->GetHeight() << std::endl;
+        //std::cout <<
+        //    "========================="
+        //    << std::endl;
 
-        tempTime = 0;
+        //std::cout << "땅의 위치 : " <<
+        //    m_gameObjects[1]->GetTransform()->GetPosition().x <<
+        //    " " << m_gameObjects[1]->GetTransform()->GetPosition().y << std::endl;
+
+        //auto otherPos = m_gameObjects[1]->GetTransform()->GetPosition();
+        //auto otherMin = m_gameObjects[1]->GetComponent<ColliderComponent>()->GetMin();
+        //auto otherMax = m_gameObjects[1]->GetComponent<ColliderComponent>()->GetMax();
+
+        //std::cout << "=== Ground 충돌 상세 ===" << std::endl;
+        //std::cout << "Ground Transform Position: (" << otherPos.x << ", " << otherPos.y << ")" << std::endl;
+        //std::cout << "Ground Collider Min: (" << otherMin.x << ", " << otherMin.y << ")" << std::endl;
+        //std::cout << "Ground Collider Max: (" << otherMax.x << ", " << otherMax.y << ")" << std::endl;
+        ////std::cout << "Ground Width/Height: " << other->GetWidth() << "/" << other->GetHeight() << std::endl;
+
+        //tempTime = 0;
     }
     
     Scene::Update(dTime);

@@ -25,12 +25,6 @@ private:
 
 	void Render();
 
-	
-	//void LoadResources();
-	//void CreateFileFolder();
-	//void CreateScene();
-
-
 
 	////////////////
 	// ÇïÇÁ ÇÔ¼ö

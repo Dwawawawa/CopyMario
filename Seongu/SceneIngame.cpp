@@ -23,10 +23,6 @@ void SceneIngame::Update(float dTime)
 }
 
 
-void SceneIngame::ShowDebug()
-{
-
-}
 
 void SceneIngame::Release()
 {

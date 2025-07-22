@@ -234,7 +234,8 @@ void GameProcess::Render()
 
 void GameProcess::Finalize()
 {
-    // [ImGUI] »ý·«
+    delete m_pTimer;
+
 
     if (m_Renderer != nullptr)
     {

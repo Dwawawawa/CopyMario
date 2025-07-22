@@ -22,10 +22,6 @@ void SceneOutro::Update(float dTime)
 }
 
 
-void SceneOutro::ShowDebug()
-{
-
-}
 
 void SceneOutro::Release()
 {

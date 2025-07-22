@@ -2,9 +2,9 @@
 #include "00pch.h"
 #include "SceneManager.h"
 #include "SceneIntro.h"
-//#include "SceneIngame.h"
-//#include "SceneBlack.h"
-//#include "SceneOutro.h"
+#include "SceneIngame.h"
+#include "SceneBlack.h"
+#include "SceneOutro.h"
 #include "10EngineD2D.h" // 가정한 렌더러 헤더
 
 SceneManager* SceneManager::s_Instance = nullptr;
@@ -37,15 +37,16 @@ SceneManager::SceneManager()
 SceneManager::~SceneManager()
 {
     Release();
+    DestroyInstance();
 }
 
 void SceneManager::Initialize()
 {
     // 씬 팩토리 등록 (람다 함수로 팩토리 패턴 구현)
     RegisterScene(SceneType::INTRO, []() { return std::make_unique<SceneIntro>(); });
-    //RegisterScene(SceneType::INGAME1_1, []() { return std::make_unique<SceneIngame>(); });
-    //RegisterScene(SceneType::BLACK, []() { return std::make_unique<SceneBlack>(); });
-    //RegisterScene(SceneType::OUTRO, []() { return std::make_unique<SceneOutro>(); });
+    RegisterScene(SceneType::INGAME1_1, []() { return std::make_unique<SceneIngame>(); });
+    RegisterScene(SceneType::BLACK, []() { return std::make_unique<SceneBlack>(); });
+    RegisterScene(SceneType::OUTRO, []() { return std::make_unique<SceneOutro>(); });
 
 
     // 초기 씬 생성

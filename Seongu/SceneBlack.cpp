@@ -20,11 +20,6 @@ void SceneBlack::Update(float dTime)
 }
 
 
-void SceneBlack::ShowDebug()
-{
-
-}
-
 void SceneBlack::Release()
 {
 
