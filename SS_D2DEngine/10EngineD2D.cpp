@@ -127,7 +127,7 @@ void SSEngine::SetTransform(const D2D1_MATRIX_3X2_F tm)
 void SSEngine::RenderBegin()
 {
 	m_d2dContext->BeginDraw();
-	m_d2dContext->Clear(D2D1::ColorF(D2D1::ColorF::LightSkyBlue)); // 배경을 흰색으로 초기화
+	m_d2dContext->Clear(D2D1::ColorF(D2D1::ColorF::Black)); // 배경을 흰색으로 초기화
 }
 
 

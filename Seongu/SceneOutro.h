@@ -13,7 +13,6 @@ public:
 	virtual void Initialize() override;
 	virtual void Update(float dTime) override;
 	
-	virtual void Release() override;
 
 	
 private:

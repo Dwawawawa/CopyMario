@@ -2,18 +2,16 @@
 #include "20GameProcess.h"
 
 
-GameProcess::GameProcess()
-    :m_deltaTime(0)
+GameProcess::GameProcess() : m_deltaTime(0)
 {
+
 }
 
 GameProcess::~GameProcess()
 {
+	Finalize();
 }
-
-///////////////////
-//! 이거 되려나?
-//! 되네 이 두 함수는 그냥 들고 가자. 
+ 
 std::wstring ConvertToWString(const std::string& str)
 {
     size_t len = 0;
@@ -40,10 +38,6 @@ std::string WStringToString(const std::wstring& wstr)
 }
 
 
-////////////////////////////////
-//! 교수님 코드와 달리 NzWndBase를 상속하지 않기 때문에 
-//! 수정사항이 꽤나 많다. 
-//! 흠... 
 bool GameProcess::Initialize(HINSTANCE hInstance)
 {
     // 윈도우 클래스 등록
@@ -102,20 +96,28 @@ void GameProcess::Run()
     // 메시지 루프
     MSG msg = {};
 
-    while (msg.message != WM_QUIT)
+    try
     {
-        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        while (msg.message != WM_QUIT)
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+            else
+            {
+                UpdateTime();
+                UpdateInput();
+                UpdateLogic();
+                Render();
+            }
         }
-        else
-        {
-            UpdateTime();
-            UpdateInput();
-            UpdateLogic();
-            Render();
-        }
+    }
+    catch (...)
+    {
+		Finalize();
+        throw;
     }
 }
 
@@ -174,7 +176,7 @@ void GameProcess::UpdateLogic()
 {
     tempTime += m_deltaTime;  // 이 라인이 있는지 확인
 
-    if (tempTime > 30.f) {
+    if (tempTime > 8.f) {
         
         tempint++;
 
@@ -234,8 +236,22 @@ void GameProcess::Render()
 
 void GameProcess::Finalize()
 {
-    delete m_pTimer;
 
+	SceneManager* sceneManager = SceneManager::GetInstance();
+    if (sceneManager)
+    {
+        sceneManager->Release();
+		sceneManager->DestroyInstance();
+    }
+
+
+    if (m_pTimer)
+    {
+        delete m_pTimer;
+        m_pTimer = nullptr;
+    }
+    
+    
 
     if (m_Renderer != nullptr)
     {

@@ -2,8 +2,7 @@
 #pragma once
 #include "Scene.h"
 
-class GameObject;
-class SSEngine;
+
 
 
 class SceneIntro : public Scene
@@ -14,6 +13,7 @@ public:
 
     void Initialize() override;
     void Update(float dTime) override;
+
 private:
 
 	

@@ -7,17 +7,27 @@
 #include "32Renderer.h"
 #include "32PhysicsComponent.h"
 #include "32ColliderComponent.h"
-
 #include "32InputComponent.h"
 
 SceneIntro::~SceneIntro()
 {
+    if(!m_gameObjects.empty())
+    {
+        m_gameObjects[0]->RemoveComponent<PhysicsComponent>();
+        m_gameObjects[0]->RemoveComponent<ColliderComponent>();
+        m_gameObjects[0]->RemoveComponent<InputComponent>();
+        m_gameObjects[0]->RemoveComponent<Renderer>();
 
+        m_gameObjects[1]->RemoveComponent<ColliderComponent>();
+        m_gameObjects[1]->RemoveComponent<Renderer>();
+    }
 }
 
 void SceneIntro::Initialize()
 {
     Scene::Initialize();
+
+    if (0) return;
 
     /////////////////////////////
     /////////////////////////////

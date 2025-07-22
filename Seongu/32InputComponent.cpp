@@ -59,6 +59,7 @@ void InputComponent::Update(float deltaTime)
 void InputComponent::Release()
 {
     Component::Initialize();
+	m_movement = nullptr;
 }
 
 KeyState InputComponent::GetKeyState(InputKey key) const

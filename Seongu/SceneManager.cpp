@@ -1,4 +1,5 @@
 // SceneManager.cpp
+// Singleton SceneManager
 #include "00pch.h"
 #include "SceneManager.h"
 #include "SceneIntro.h"
@@ -36,8 +37,7 @@ SceneManager::SceneManager()
 
 SceneManager::~SceneManager()
 {
-    Release();
-    DestroyInstance();
+
 }
 
 void SceneManager::Initialize()
