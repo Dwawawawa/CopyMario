@@ -3,7 +3,6 @@
 
 class GameObject;
 
-
 class SceneIngame : public Scene
 {
 public:
@@ -13,9 +12,11 @@ public:
 	// Scene을(를) 통해 상속됨
 	virtual void Initialize() override;
 	virtual void Update(float dTime) override;
+	
 
-
+	
 private:
 
+	
 
 };

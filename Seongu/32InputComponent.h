@@ -1,7 +1,6 @@
 // 32InputComponent.h
 #include "00pch.h"
 #include "31Component.h"
-#include "32Movement.h"
 #include <string_view>
 #include <optional>
 #include "../SS_D2DEngine/magic_enum/magic_enum_all.hpp"
@@ -87,10 +86,6 @@ private:
     };
     std::vector<CallbackInfo> m_callbacks;
     StateCallback m_onStateChanged;
-
-    // Movement 컴포넌트 연동용
-    Movement* m_movement = nullptr;
-    float m_moveSpeed = 200.0f;
 
     // 내부 메서드들
     void UpdateKeyStates();

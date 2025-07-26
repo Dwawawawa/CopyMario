@@ -30,26 +30,14 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SceneIntro.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="30GameObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SceneIngame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SceneBlack.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneOutro.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="31Component.h">
       <Filter>헤더 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="32Movement.cpp">
-      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="32Renderer.cpp">
       <Filter>소스 파일</Filter>
@@ -57,10 +45,7 @@
     <ClCompile Include="32InputComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="32ColliderComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="32PhysicsC.cpp">
+    <ClCompile Include="32RectTransform.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,28 +59,13 @@
     <ClInclude Include="Scene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneIntro.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="30GameObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SceneIngame.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SceneBlack.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneOutro.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="32Transform.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="32Movement.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="32Renderer.h">
@@ -104,10 +74,13 @@
     <ClInclude Include="32InputComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="32ColliderComponent.h">
+    <ClInclude Include="SceneManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="32PhysicsComponent.h">
+    <ClInclude Include="01Debug.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="32RectTransform.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

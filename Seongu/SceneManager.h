@@ -9,10 +9,7 @@ class SSEngine;
 
 enum class SceneType
 {
-    INTRO,
-    INGAME1_1,
-    BLACK,
-    OUTRO,
+    INGAME,
     COUNT
 };
 

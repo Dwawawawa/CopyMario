@@ -2,10 +2,7 @@
 // Singleton SceneManager
 #include "00pch.h"
 #include "SceneManager.h"
-#include "SceneIntro.h"
 #include "SceneIngame.h"
-#include "SceneBlack.h"
-#include "SceneOutro.h"
 #include "10EngineD2D.h" // 가정한 렌더러 헤더
 
 SceneManager* SceneManager::s_Instance = nullptr;
@@ -30,7 +27,7 @@ void SceneManager::DestroyInstance()
 
 SceneManager::SceneManager()
     : m_CurrentScene(nullptr)    
-    , m_CurrentSceneType(SceneType::INTRO)
+    , m_CurrentSceneType(SceneType::INGAME)
     , m_Renderer(nullptr)
 {
 }
@@ -42,16 +39,11 @@ SceneManager::~SceneManager()
 
 void SceneManager::Initialize()
 {
-    // 씬 팩토리 등록 (람다 함수로 팩토리 패턴 구현)
-    RegisterScene(SceneType::INTRO, []() { return std::make_unique<SceneIntro>(); });
-    RegisterScene(SceneType::INGAME1_1, []() { return std::make_unique<SceneIngame>(); });
-    RegisterScene(SceneType::BLACK, []() { return std::make_unique<SceneBlack>(); });
-    RegisterScene(SceneType::OUTRO, []() { return std::make_unique<SceneOutro>(); });
-
+    RegisterScene(SceneType::INGAME, []() { return std::make_unique<SceneIngame>(); });
 
     // 초기 씬 생성
-    m_CurrentScene = CreateScene(SceneType::INTRO);
-    m_CurrentSceneType = SceneType::INTRO;
+    m_CurrentScene = CreateScene(SceneType::INGAME);
+    m_CurrentSceneType = SceneType::INGAME;
 
     if (m_CurrentScene)
     {

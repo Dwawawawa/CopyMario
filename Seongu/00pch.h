@@ -64,6 +64,7 @@
 #include "30GameObject.h" // GameObject 클래스의 정의를 포함하는 헤더 파일 추가
 #include "SceneManager.h"
 
+#include "01Debug.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "x64/Debug/SS_D2DEngine.lib") 

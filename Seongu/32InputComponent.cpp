@@ -15,28 +15,6 @@ InputComponent::InputComponent()
 void InputComponent::Initialize()
 {
     Component::Initialize();
-    // Movement 컴포넌트 찾기 (있다면)
-    m_movement = GetOwner()->GetComponent<Movement>();
-
-
-    RegisterKeyCallback(InputKey::Left, KeyState::Hold, [this](InputKey){
-        if (m_movement) m_movement->SetVelocity(-m_moveSpeed,0);
-        });
-
-    RegisterKeyCallback(InputKey::Right, KeyState::Hold, [this](InputKey) {
-        if (m_movement) m_movement->SetVelocity(m_moveSpeed, 0);
-        });
-
-    RegisterKeyCallback(InputKey::Left, KeyState::Released, [this](InputKey) {
-        if (m_movement && !IsKeyHold(InputKey::Right)) 
-            m_movement->SetVelocity(0);
-        });
-
-    RegisterKeyCallback(InputKey::Right, KeyState::Released, [this](InputKey) {
-        if (m_movement && !IsKeyHold(InputKey::Left))
-            m_movement->SetVelocity(0);
-        });
-
 }
 
 void InputComponent::Update(float deltaTime)
@@ -44,22 +22,11 @@ void InputComponent::Update(float deltaTime)
     UpdateKeyStates();
     ProcessCallbacks();
 
-    ////debug
-    //static float tempTime = 0;
-    //tempTime += deltaTime;
-    //if (tempTime > 0.5f)
-    //{
-    //    //std::cout << debugInput->GetAllKeyStatesAsString()<< std::endl;
-    //    std::cout << GetAllKeyStatesAsString() << std::endl;
-
-    //    tempTime = 0;
-    //}
 }
 
 void InputComponent::Release()
 {
     Component::Initialize();
-	m_movement = nullptr;
 }
 
 KeyState InputComponent::GetKeyState(InputKey key) const
@@ -128,7 +95,6 @@ void InputComponent::RegisterKeyCallback(std::string_view keyName, std::string_v
 
 void InputComponent::SetupWithMovement(float moveSpeed)
 {
-    m_moveSpeed = moveSpeed;
 }
 
 std::string InputComponent::GetAllKeyStatesAsString() const
